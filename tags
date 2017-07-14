@@ -5,8 +5,10 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
-011|	.\Session.vim	/^normal! 011|$/;"	m
-032|	.\Session.vim	/^normal! 032|$/;"	m
+0	.\Session.vim	/^normal! 0$/;"	m
+017|	.\Session.vim	/^normal! 017|$/;"	m
+019|	.\Session.vim	/^normal! 019|$/;"	m
+024|	.\Session.vim	/^normal! 024|$/;"	m
 03|	.\Session.vim	/^normal! 03|$/;"	m
 08|	.\Session.vim	/^normal! 08|$/;"	m
 <F2>	.\Session.vim	/^map <F2> :!. build.sh$/;"	m
@@ -15,32 +17,46 @@
 <F8>	.\Session.vim	/^map <F8> :tabn$/;"	m
 <Plug>NetrwBrowseX	.\Session.vim	/^nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())$/;"	m
 <Plug>NetrwBrowseXVis	.\Session.vim	/^vnoremap <silent> <Plug>NetrwBrowseXVis :call netrw#BrowseXVis()$/;"	m
-PhysicalState	.\physical_state.cc	/^PhysicalState::PhysicalState($/;"	f	class:PhysicalState
+Field	.\physical_state.cc	/^Field::Field($/;"	f	class:Field
+Field	.\physical_state.h	/^class Field {$/;"	c
+PhysicalState	.\physical_state.cc	/^PhysicalState::PhysicalState ($/;"	f	class:PhysicalState
 PhysicalState	.\physical_state.h	/^class PhysicalState {$/;"	c
-Print	.\physical_state.cc	/^void PhysicalState::Print() {$/;"	f	class:PhysicalState
+Print	.\physical_state.cc	/^void Field::Print(std::ostream& stream) {$/;"	f	class:Field
+Print	.\physical_state.cc	/^void PhysicalState::Print(std::ostream& stream) {$/;"	f	class:PhysicalState
 Run	.\simulation.cc	/^void Simulation::Run() {$/;"	f	class:Simulation
 S	.\Session.vim	/^map S cc<BS>$/;"	m
 SessionLoad	.\Session.vim	/^let SessionLoad = 1$/;"	v
 Simulation	.\simulation.cc	/^Simulation::Simulation($/;"	f	class:Simulation
 Simulation	.\simulation.h	/^class Simulation {$/;"	c
+Step	.\physical_state.cc	/^void PhysicalState::Step() {$/;"	f	class:PhysicalState
 Step	.\simulation.cc	/^int Simulation::Step() {$/;"	f	class:Simulation
-data_	.\physical_state.h	/^  double** data_;$/;"	m	class:PhysicalState
+data_	.\physical_state.h	/^  double** data_;$/;"	m	class:Field
 gx	.\Session.vim	/^nmap gx <Plug>NetrwBrowseX$/;"	m
 gx	.\Session.vim	/^vmap gx <Plug>NetrwBrowseXVis$/;"	m
 jj	.\Session.vim	/^imap jj $/;"	m
 main	.\main.cc	/^int main(){$/;"	f
-operator ()	.\physical_state.cc	/^double& PhysicalState::operator()(int i, int j){$/;"	f	class:PhysicalState
+operator ()	.\physical_state.cc	/^double& Field::operator()(int i, int j){$/;"	f	class:Field
+out_stream_	.\simulation.h	/^  std::ostream& out_stream_;$/;"	m	class:Simulation
 physical_state_	.\simulation.h	/^  PhysicalState physical_state_;$/;"	m	class:Simulation
 s:cpo_save	.\Session.vim	/^let s:cpo_save=&cpo$/;"	v
+s:l	.\Session.vim	/^let s:l = 1 - ((0 * winheight(0) + 27) \/ 55)$/;"	v
+s:l	.\Session.vim	/^let s:l = 16 - ((12 * winheight(0) + 13) \/ 27)$/;"	v
 s:l	.\Session.vim	/^let s:l = 2 - ((1 * winheight(0) + 27) \/ 55)$/;"	v
-s:l	.\Session.vim	/^let s:l = 23 - ((22 * winheight(0) + 13) \/ 27)$/;"	v
-s:l	.\Session.vim	/^let s:l = 40 - ((18 * winheight(0) + 13) \/ 27)$/;"	v
-s:l	.\Session.vim	/^let s:l = 6 - ((5 * winheight(0) + 27) \/ 55)$/;"	v
+s:l	.\Session.vim	/^let s:l = 3 - ((2 * winheight(0) + 13) \/ 27)$/;"	v
+s:l	.\Session.vim	/^let s:l = 48 - ((26 * winheight(0) + 13) \/ 27)$/;"	v
+s:l	.\Session.vim	/^let s:l = 7 - ((6 * winheight(0) + 13) \/ 27)$/;"	v
+s:l	.\Session.vim	/^let s:l = 8 - ((7 * winheight(0) + 27) \/ 55)$/;"	v
 s:so_save	.\Session.vim	/^let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0$/;"	v
 s:sx	.\Session.vim	/^let s:sx = expand("<sfile>:p:r")."x.vim"$/;"	v
 s:wipebuf	.\Session.vim	/^  let s:wipebuf = bufnr('%')$/;"	v
-size_x_	.\physical_state.h	/^ int size_x_;$/;"	m	class:PhysicalState
+size_x_	.\physical_state.h	/^  int size_x_;$/;"	m	class:Field
+size_x_	.\physical_state.h	/^  int size_x_;$/;"	m	class:PhysicalState
 size_x_	.\simulation.h	/^  int size_x_;$/;"	m	class:Simulation
-size_y_	.\physical_state.h	/^ int size_y_;$/;"	m	class:PhysicalState
+size_y_	.\physical_state.h	/^  int size_y_;$/;"	m	class:Field
+size_y_	.\physical_state.h	/^  int size_y_;$/;"	m	class:PhysicalState
 size_y_	.\simulation.h	/^  int size_y_;$/;"	m	class:Simulation
+u_	.\physical_state.h	/^  Field u_;$/;"	m	class:PhysicalState
+v_	.\physical_state.h	/^  Field v_;$/;"	m	class:PhysicalState
+w_	.\physical_state.h	/^  Field w_;$/;"	m	class:PhysicalState
 zt	.\Session.vim	/^normal! zt$/;"	m
+~Field	.\physical_state.cc	/^Field::~Field() {$/;"	f	class:Field

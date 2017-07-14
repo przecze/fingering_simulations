@@ -4,7 +4,7 @@
 #include<fstream>
 int main(){
   std::ofstream out_file("out.txt", std::ofstream::out); 
-  Simulation simulation(5, 5);
+  Simulation simulation(100, 100, out_file);
   simulation.Run();
   return 0;
 }

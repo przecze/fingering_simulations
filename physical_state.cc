@@ -55,14 +55,15 @@ void PhysicalState::Step() {
   Field nu(size_x_, size_y_), nv(size_x_, size_y_), nw(size_x_, size_y_); 
   double D1 = 0.001;
   double D2 = 0.001;
-  double F = 0.001;
-  double k = 0.001;
+  double dx = 0.2;
+  double F = 0.065;
+  double k = 0.03;
   double dt = 1.;
   PhysicalState new_state(size_x_, size_y_);
   for(int i = 0; i<size_x_; ++i){
     for(int j = 0; j<size_y_; ++j){
-      nu(i,j) = u_(i, j) + D1*dt*(u_(i+1, j)+u_(i-1, j)+u_(i, j+1)+u_(i, j-1)-4*u_(i, j));
-      nv(i,j) = v_(i, j) + D2*dt*(v_(i+1, j)+v_(i-1, j)+v_(i, j+1)+v_(i, j-1)-4*v_(i, j));
+      nu(i,j) = u_(i, j) + D1/(dx*dx)*dt*(u_(i+1, j)+u_(i-1, j)+u_(i, j+1)+u_(i, j-1)-4*u_(i, j)) - u_(i,j)*v_(i,j)*v_(i,j) + F*(1-u_(i,j));
+      nv(i,j) = v_(i, j) + D2/(dx*dx)*dt*(v_(i+1, j)+v_(i-1, j)+v_(i, j+1)+v_(i, j-1)-4*v_(i, j)) + u_(i,j)*v_(i,j)*v_(i,j) - (F+k)*v_(i,j);
       nw(i,j) = 0;
     }
   }

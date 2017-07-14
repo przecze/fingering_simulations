@@ -16,7 +16,8 @@ Simulation::Simulation(
 
 void Simulation::Run() {
   std::cout<<"Hello, there!"<<std::endl;
-  physical_state_.u_(5,5)= 1.;
+  physical_state_.u_(5,5)= 0.6;
+  physical_state_.u_(5,5)= 0.4;
   for(int step_no = 0; step_no<1000; ++step_no){
     if(!(step_no%100)){
       out_stream_<<"step "<<step_no<<'\n';
