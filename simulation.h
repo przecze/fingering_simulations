@@ -1,3 +1,16 @@
+class PhysicalState {
+ public:
+  PhysicalState(
+      int size_x,
+      int size_y
+      );
+ double& operator()(int i, int j);
+ void Print();
+ int size_x_;
+ int size_y_;
+ private:
+  double** data_;
+};
 class Simulation {
  public:
   Simulation(
@@ -5,6 +18,7 @@ class Simulation {
       int size_y
       );
   void Run();
+  int Step();
  private: 
-  double** physical_state_; //TODO move to separate class, add smart ownership to avoid data leakage
+  PhysicalState physical_state_;
 };
