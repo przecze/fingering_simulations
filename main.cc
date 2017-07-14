@@ -1,7 +1,7 @@
 #include<simulation.h>
 
 int main(){
-  Simulation simulation;
+  Simulation simulation(10, 10);
   simulation.Run();
   return 0;
 }

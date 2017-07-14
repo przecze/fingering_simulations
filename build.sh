@@ -1,2 +1,2 @@
 echo Building...
-g++ -I . *.cc -o output
+g++ -std=c++11 -I . *.cc -o output
