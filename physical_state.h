@@ -12,7 +12,9 @@ class Field {
   void Set(double value);
   void Set(std::function<double(int,int)> function);
   void Set(std::function<double(int,int)> function, int x1, int x2, int y1, int y2);
+  void Set(double value, int x1, int x2, int y1, int y2);
   void Set(double base, double rand_base, int x1, int x2, int y1, int y2);
+  void Set(Field& field);
   int size_x_;
   int size_y_;
  private:
@@ -26,7 +28,10 @@ class PhysicalState {
       );
   int size_x_;
   int size_y_;
+  void InitValues();
   void Step();
+  void JapanStep();
+  void GrayScottStep();
   void Print(std::ostream& stream);
   Field u_;
   Field v_;

@@ -23,5 +23,5 @@ while(file_in):
         print "added ", name,  'max= ', np.max(data[field,:,:])
         cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
         init = False
-    plt.pause(0.5)
+    plt.pause(0.1)
     file_in.readline()

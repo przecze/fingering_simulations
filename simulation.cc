@@ -16,11 +16,15 @@ Simulation::Simulation(
 
 
 void Simulation::Run() {
-  std::cout<<"Hello, there!"<<std::endl;
-  physical_state_.u_.Set(1.);
-  physical_state_.u_.Set(0.4, 0.2, size_x_/4, 3*size_x_/4, size_y_/4, 3*size_y_/4);
-  physical_state_.v_.Set(0.2, 0.2, size_x_/4, 3*size_x_/4, size_y_/4, 3*size_y_/4);
-  for (int step_no = 0; step_no<1000; ++step_no) {
+  std::cout<<"Running simulation!"<<std::endl;
+  physical_state_.InitValues();
+  int steps = 4000;
+  std::cout<<'|';
+  for (int i = 0; i<steps; i+=100) {
+    std::cout<<'-';
+  }
+  std::cout<<"|\n|"<<std::flush;
+  for (int step_no = 0; step_no<steps; ++step_no) {
     if (!(step_no%100)) {
       out_stream_<<"step "<<step_no<<'\n';
       physical_state_.Print(out_stream_);
