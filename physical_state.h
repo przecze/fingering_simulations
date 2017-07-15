@@ -1,4 +1,5 @@
 #include<fstream>
+#include<functional>
 class Field {
  public:
   Field(
@@ -8,6 +9,10 @@ class Field {
   ~Field();
   double& operator()(int i, int j);
   void Print(std::ostream& stream);
+  void Set(double value);
+  void Set(std::function<double(int,int)> function);
+  void Set(std::function<double(int,int)> function, int x1, int x2, int y1, int y2);
+  void Set(double base, double rand_base, int x1, int x2, int y1, int y2);
   int size_x_;
   int size_y_;
  private:

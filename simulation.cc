@@ -1,6 +1,7 @@
 #include<simulation.h>
 #include<iostream>
 #include<fstream>
+
 Simulation::Simulation(
     int size_x,
     int size_y,
@@ -16,15 +17,20 @@ Simulation::Simulation(
 
 void Simulation::Run() {
   std::cout<<"Hello, there!"<<std::endl;
-  physical_state_.u_(5,5)= 0.6;
-  physical_state_.u_(5,5)= 0.4;
-  for(int step_no = 0; step_no<1000; ++step_no){
-    if(!(step_no%100)){
+  physical_state_.u_.Set(1.);
+  physical_state_.u_.Set(0.4, 0.2, size_x_/4, 3*size_x_/4, size_y_/4, 3*size_y_/4);
+  physical_state_.v_.Set(0.2, 0.2, size_x_/4, 3*size_x_/4, size_y_/4, 3*size_y_/4);
+  for (int step_no = 0; step_no<1000; ++step_no) {
+    if (!(step_no%100)) {
       out_stream_<<"step "<<step_no<<'\n';
       physical_state_.Print(out_stream_);
+      std::cout<<'#'<<std::flush;
     }
     Step();
   }
+  std::cout<<std::endl;
+  out_stream_<<"step "<<1000<<'\n';
+  physical_state_.Print(out_stream_);
   
 }
 

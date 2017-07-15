@@ -6,8 +6,8 @@ set cpo&vim
 map S cc<BS>
 vmap gx <Plug>NetrwBrowseXVis
 nmap gx <Plug>NetrwBrowseX
-map <F2> :!. build.sh
 map <F3> :!./output.exe
+map <F2> :!. build.sh
 vnoremap <silent> <Plug>NetrwBrowseXVis :call netrw#BrowseXVis()
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(expand((exists("g:netrw_gx")? g:netrw_gx : '<cfile>')),netrw#CheckIfRemote())
 map <F8> :tabn
@@ -29,6 +29,7 @@ set showmatch
 set statusline=%<%F%h%m%r\ [%{&ff}]\ (%{strftime(\"%H:%M\ %d/%m/%Y\",getftime(expand(\"%:p\")))})%=%l,%c%V\ %P
 set tabstop=2
 set visualbell
+set wildignore=*.pyc
 let s:so_save = &so | let s:siso_save = &siso | set so=0 siso=0
 let v:this_session=expand("<sfile>:p")
 silent only
@@ -40,11 +41,16 @@ set shortmess=aoO
 badd +1 build.sh
 badd +1 simulation.cc
 badd +1 sumulation.cc
-badd +1 simulation.h
+badd +4 simulation.h
 badd +1 main.cc
 badd +4 physical_state.cc
-badd +10 physical_state.h
-badd +0 out.txt
+badd +21 physical_state.h
+badd +1 out.txt
+badd +1 view.py
+badd +68 /c/sciencework/studia/licencjat/Gray/generate_fingers.py
+badd +1 e.
+badd +0 test.py
+badd +24 /c/sciencework/studia/licencjat/Gray/Zik1.py
 argglobal
 silent! argdel *
 argadd build.sh
@@ -180,8 +186,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 27 + 29) / 58)
-exe '2resize ' . ((&lines * 27 + 29) / 58)
+exe '1resize ' . ((&lines * 25 + 29) / 58)
+exe '2resize ' . ((&lines * 29 + 29) / 58)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -291,7 +297,7 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 3 - ((2 * winheight(0) + 13) / 27)
+let s:l = 3 - ((2 * winheight(0) + 12) / 25)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
@@ -409,16 +415,16 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 7 - ((6 * winheight(0) + 13) / 27)
+let s:l = 30 - ((26 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-7
-normal! 024|
+30
+normal! 03|
 lcd /c/sciencework/studia/licencjat/cpp_project
 wincmd w
-exe '1resize ' . ((&lines * 27 + 29) / 58)
-exe '2resize ' . ((&lines * 27 + 29) / 58)
+exe '1resize ' . ((&lines * 25 + 29) / 58)
+exe '2resize ' . ((&lines * 29 + 29) / 58)
 tabedit /c/sciencework/studia/licencjat/cpp_project/physical_state.h
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -429,8 +435,8 @@ set nosplitbelow
 set nosplitright
 wincmd t
 set winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 27 + 29) / 58)
-exe '2resize ' . ((&lines * 27 + 29) / 58)
+exe '1resize ' . ((&lines * 19 + 29) / 58)
+exe '2resize ' . ((&lines * 35 + 29) / 58)
 argglobal
 setlocal keymap=
 setlocal noarabic
@@ -540,12 +546,12 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 16 - ((12 * winheight(0) + 13) / 27)
+let s:l = 15 - ((8 * winheight(0) + 9) / 19)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-16
-normal! 03|
+15
+normal! 074|
 lcd /c/sciencework/studia/licencjat/cpp_project
 wincmd w
 argglobal
@@ -658,17 +664,138 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 48 - ((26 * winheight(0) + 13) / 27)
+let s:l = 103 - ((26 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-48
-normal! 0
+103
+normal! 015|
 lcd /c/sciencework/studia/licencjat/cpp_project
 wincmd w
-2wincmd w
-exe '1resize ' . ((&lines * 27 + 29) / 58)
-exe '2resize ' . ((&lines * 27 + 29) / 58)
+exe '1resize ' . ((&lines * 19 + 29) / 58)
+exe '2resize ' . ((&lines * 35 + 29) / 58)
+tabedit /c/sciencework/studia/licencjat/cpp_project/main.cc
+set splitbelow splitright
+set nosplitbelow
+set nosplitright
+wincmd t
+set winheight=1 winwidth=1
+argglobal
+setlocal keymap=
+setlocal noarabic
+setlocal autoindent
+setlocal backupcopy=
+setlocal nobinary
+setlocal nobreakindent
+setlocal breakindentopt=
+setlocal bufhidden=
+setlocal buflisted
+setlocal buftype=
+setlocal cindent
+setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal cinoptions=
+setlocal cinwords=if,else,while,do,for,switch
+setlocal colorcolumn=
+setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
+setlocal commentstring=/*%s*/
+setlocal complete=.,w,b,u,t,i
+setlocal concealcursor=
+setlocal conceallevel=0
+setlocal completefunc=
+setlocal nocopyindent
+setlocal cryptmethod=
+setlocal nocursorbind
+setlocal nocursorcolumn
+setlocal nocursorline
+setlocal define=
+setlocal dictionary=
+setlocal nodiff
+setlocal equalprg=
+setlocal errorformat=
+setlocal expandtab
+if &filetype != 'cpp'
+setlocal filetype=cpp
+endif
+setlocal fixendofline
+setlocal foldcolumn=0
+setlocal foldenable
+setlocal foldexpr=0
+setlocal foldignore=#
+setlocal foldlevel=0
+setlocal foldmarker={{{,}}}
+setlocal foldmethod=manual
+setlocal foldminlines=1
+setlocal foldnestmax=20
+setlocal foldtext=foldtext()
+setlocal formatexpr=
+setlocal formatoptions=croql
+setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
+setlocal grepprg=
+setlocal iminsert=0
+setlocal imsearch=0
+setlocal include=
+setlocal includeexpr=
+setlocal indentexpr=
+setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal noinfercase
+setlocal iskeyword=@,48-57,_,192-255
+setlocal keywordprg=
+setlocal nolinebreak
+setlocal nolisp
+setlocal lispwords=
+setlocal nolist
+setlocal makeprg=
+setlocal matchpairs=(:),{:},[:]
+setlocal modeline
+setlocal modifiable
+setlocal nrformats=bin,octal,hex
+setlocal nonumber
+setlocal numberwidth=4
+setlocal omnifunc=ccomplete#Complete
+setlocal path=
+setlocal nopreserveindent
+setlocal nopreviewwindow
+setlocal quoteescape=\\
+setlocal noreadonly
+setlocal norelativenumber
+setlocal norightleft
+setlocal rightleftcmd=search
+setlocal noscrollbind
+setlocal shiftwidth=2
+setlocal noshortname
+setlocal signcolumn=auto
+setlocal nosmartindent
+setlocal softtabstop=0
+setlocal nospell
+setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
+setlocal spellfile=
+setlocal spelllang=en
+setlocal statusline=
+setlocal suffixesadd=
+setlocal swapfile
+setlocal synmaxcol=3000
+if &syntax != 'cpp'
+setlocal syntax=cpp
+endif
+setlocal tabstop=2
+setlocal tagcase=
+setlocal tags=
+setlocal textwidth=0
+setlocal thesaurus=
+setlocal noundofile
+setlocal undolevels=-123456
+setlocal nowinfixheight
+setlocal nowinfixwidth
+setlocal wrap
+setlocal wrapmargin=0
+silent! normal! zE
+let s:l = 8 - ((6 * winheight(0) + 27) / 55)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+8
+normal! 019|
+lcd /c/sciencework/studia/licencjat/cpp_project
 tabedit /c/sciencework/studia/licencjat/cpp_project/out.txt
 set splitbelow splitright
 set nosplitbelow
@@ -785,14 +912,14 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 1 - ((0 * winheight(0) + 27) / 55)
+let s:l = 3084 - ((10 * winheight(0) + 27) / 55)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1
-normal! 0
+3084
+normal! 02|
 lcd /c/sciencework/studia/licencjat/cpp_project
-tabedit /c/sciencework/studia/licencjat/cpp_project/main.cc
+tabedit /c/sciencework/studia/licencjat/cpp_project/view.py
 set splitbelow splitright
 set nosplitbelow
 set nosplitright
@@ -809,13 +936,13 @@ setlocal breakindentopt=
 setlocal bufhidden=
 setlocal buflisted
 setlocal buftype=
-setlocal cindent
-setlocal cinkeys=0{,0},0),:,0#,!^F,o,O,e
+setlocal nocindent
+setlocal cinkeys=0{,0},0),:,!^F,o,O,e
 setlocal cinoptions=
 setlocal cinwords=if,else,while,do,for,switch
 setlocal colorcolumn=
-setlocal comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,://
-setlocal commentstring=/*%s*/
+setlocal comments=b:#,fb:-
+setlocal commentstring=#\ %s
 setlocal complete=.,w,b,u,t,i
 setlocal concealcursor=
 setlocal conceallevel=0
@@ -831,8 +958,8 @@ setlocal nodiff
 setlocal equalprg=
 setlocal errorformat=
 setlocal expandtab
-if &filetype != 'cpp'
-setlocal filetype=cpp
+if &filetype != 'python'
+setlocal filetype=python
 endif
 setlocal fixendofline
 setlocal foldcolumn=0
@@ -846,18 +973,18 @@ setlocal foldminlines=1
 setlocal foldnestmax=20
 setlocal foldtext=foldtext()
 setlocal formatexpr=
-setlocal formatoptions=croql
+setlocal formatoptions=tcq
 setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}\\t\ ]\\s*
 setlocal grepprg=
 setlocal iminsert=0
 setlocal imsearch=0
-setlocal include=
-setlocal includeexpr=
-setlocal indentexpr=
-setlocal indentkeys=0{,0},:,0#,!^F,o,O,e
+setlocal include=^\\s*\\(from\\|import\\)
+setlocal includeexpr=substitute(v:fname,'\\.','/','g')
+setlocal indentexpr=GetPythonIndent(v:lnum)
+setlocal indentkeys=0{,0},:,!^F,o,O,e,<:>,=elif,=except
 setlocal noinfercase
 setlocal iskeyword=@,48-57,_,192-255
-setlocal keywordprg=
+setlocal keywordprg=pydoc
 setlocal nolinebreak
 setlocal nolisp
 setlocal lispwords=
@@ -869,7 +996,7 @@ setlocal modifiable
 setlocal nrformats=bin,octal,hex
 setlocal nonumber
 setlocal numberwidth=4
-setlocal omnifunc=ccomplete#Complete
+setlocal omnifunc=pythoncomplete#Complete
 setlocal path=
 setlocal nopreserveindent
 setlocal nopreviewwindow
@@ -879,23 +1006,23 @@ setlocal norelativenumber
 setlocal norightleft
 setlocal rightleftcmd=search
 setlocal noscrollbind
-setlocal shiftwidth=2
+setlocal shiftwidth=4
 setlocal noshortname
 setlocal signcolumn=auto
 setlocal nosmartindent
-setlocal softtabstop=0
+setlocal softtabstop=4
 setlocal nospell
 setlocal spellcapcheck=[.?!]\\_[\\])'\"\	\ ]\\+
 setlocal spellfile=
 setlocal spelllang=en
 setlocal statusline=
-setlocal suffixesadd=
+setlocal suffixesadd=.py
 setlocal swapfile
 setlocal synmaxcol=3000
-if &syntax != 'cpp'
-setlocal syntax=cpp
+if &syntax != 'python'
+setlocal syntax=python
 endif
-setlocal tabstop=2
+setlocal tabstop=8
 setlocal tagcase=
 setlocal tags=
 setlocal textwidth=0
@@ -907,14 +1034,14 @@ setlocal nowinfixwidth
 setlocal wrap
 setlocal wrapmargin=0
 silent! normal! zE
-let s:l = 8 - ((7 * winheight(0) + 27) / 55)
+let s:l = 24 - ((23 * winheight(0) + 27) / 55)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-8
-normal! 019|
+24
+normal! 09|
 lcd /c/sciencework/studia/licencjat/cpp_project
-tabnext 3
+tabnext 5
 set stal=1
 if exists('s:wipebuf')
   silent exe 'bwipe ' . s:wipebuf
