@@ -1,2 +1,2 @@
 echo Building...
-g++ -std=c++11 -I . *.cc -o output
+g++  -I . *.cc -o output -pthread -std=c++11
