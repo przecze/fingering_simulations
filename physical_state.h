@@ -1,5 +1,7 @@
 #include<fstream>
 #include<functional>
+#include<memory>
+
 class Field {
  public:
   Field(
@@ -15,11 +17,13 @@ class Field {
   void Set(double value, int x1, int x2, int y1, int y2);
   void Set(double base, double rand_base, int x1, int x2, int y1, int y2);
   void Set(Field& field);
+  void PartialSet(Field& field, int x_begin, int x_end);
   int size_x_;
   int size_y_;
  private:
   double** data_;
 };
+
 class PhysicalState {
  public:
   PhysicalState(
@@ -29,12 +33,15 @@ class PhysicalState {
   int size_x_;
   int size_y_;
   void InitValues();
-  void Step();
-  void JapanStep();
-  void GrayScottStep();
+  void PartialStepCalculation(int x_begin, int x_end);
+  void ApplyBoundaryConditions();
+  void SwapFieldsWithNew();
   void Print(std::ostream& stream);
-  Field u_;
-  Field v_;
-  Field w_;
+  std::unique_ptr<Field> u_;
+  std::unique_ptr<Field> v_;
+  std::unique_ptr<Field> w_;
+  std::unique_ptr<Field> nu_;
+  std::unique_ptr<Field> nv_;
+  std::unique_ptr<Field> nw_;
  private:
 };

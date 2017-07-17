@@ -24,4 +24,4 @@ while(file_in):
         cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
         init = False
     plt.pause(0.1)
-    file_in.readline()
+    file_in.readline() #TODO fix a bug at the and of the program

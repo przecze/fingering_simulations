@@ -33,7 +33,7 @@ void Field::Print(std::ostream& stream) {
   stream<<size_x_<<" "<<size_y_<<'\n';
   for (int i = 0; i<size_x_; ++i) {
     for (int j = 0; j<size_y_; ++j) {
-      stream<<std::setprecision(3)<<std::fixed<<std::setw(6)<<data_[i][j]<<" ";
+      stream<<std::setprecision(4)<<std::fixed<<std::setw(6)<<data_[i][j]<<" ";
     }
     stream<<'\n';
   }
@@ -79,7 +79,18 @@ void Field::Set(Field& field) {//TODO implement using memset
   }
 }  
 
-double& Field::operator()(int i, int j){
+void Field::PartialSet(Field& field, int x_begin, int x_end) {//TODO implement using memset
+  for(int i = x_begin; i<x_end; ++i){
+    for(int j = 0; j<size_y_; ++j){
+      data_[i][j] = field(i,j);
+    }
+  }
+}  
+
+inline double& Field::operator()(int i, int j){
+  if(i>=0 && i<size_x_ && j>=0 && j<size_y_)
+    return data_[i][j];
+  else
     return data_[(i+size_x_)%size_x_][(j+size_y_)%size_y_];
 }
 
@@ -89,14 +100,16 @@ PhysicalState::PhysicalState (
     ) : 
     size_x_(size_x),
     size_y_(size_y),
-    u_(size_x, size_y),
-    v_(size_x, size_y),
-    w_(size_x, size_y)
+    u_(new Field(size_x, size_y)),
+    v_(new Field(size_x, size_y)),
+    w_(new Field(size_x, size_y)),
+    nu_(new Field(size_x, size_y)),
+    nv_(new Field(size_x, size_y)),
+    nw_(new Field(size_x, size_y))
     {
 }
     
-void PhysicalState::JapanStep() {
-  Field nu(size_x_, size_y_), nv(size_x_, size_y_), nw(size_x_, size_y_); 
+void PhysicalState::PartialStepCalculation(int x_begin, int x_end) {
   double dt = 0.0025;
   double dx = 0.5   ;
   double D1 = 1.    ;
@@ -114,92 +127,72 @@ void PhysicalState::JapanStep() {
   double Pe=.4     ;
   double vp=0.45   ;
   double Le=0.1    ;
+
+  Field& U(*u_);
+  Field& NU(*nu_);
+  Field& V(*v_);
+  Field& NV(*nv_);
+  Field& W(*w_);
+  Field& NW(*nw_);
   
   
-  for (int i = 0; i<size_x_; ++i) {
+  for (int i = x_begin; i<x_end; ++i) {
     for (int j = 0; j<size_y_; ++j) {
 
-      register double u = u_(i,j);
-      register double v = v_(i,j);
-      register double w = w_(i,j);
+      register double u = U(i,j);
+      register double v = V(i,j);
+      register double w = W(i,j);
       register double f = gamma*(v>vp?1:0)*(w>0?1:0)*u*theta*exp(theta-theta/v);
 
-      nu(i,j) = u + 
+      NU(i,j) = u + 
           dt*(
-              (1./(phi*Le*dx*dx))*(u_(i+1, j)+u_(i-1, j)+u_(i, j+1)+u_(i, j-1)-4*u_(i, j))
+              (1./(phi*Le*dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
               - f/phi
-              - Pe/dx/2.0*(u_(i+1,j) - u_(i-1,j))
+              - Pe/dx/2.0*(U(i+1,j) - U(i-1,j))
               );
 
-      nv(i,j) = v +
+      NV(i,j) = v +
           dt*(
-              0.3/(dx*dx)*(v_(i+1, j)+v_(i-1, j)+v_(i, j+1)+v_(i, j-1)-4*v_(i, j))
+              0.3/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
               +  beta*f
-              -Pe*phi*lam/dx/2.0*(v_(i+1,j)-v_(i-1,j))
+              -Pe*phi*lam/dx/2.0*(V(i+1,j)-V(i-1,j))
               -ha*(v-sigma)
               );
       register double new_w = w - haw*dt*f;
-      nw(i,j) = (new_w>0?new_w:0);
+      NW(i,j) = (new_w>0?new_w:0);
 
     }
   }
-  u_.Set(nu);
-  u_.Set(0., 0, 1, 0, size_y_);
-  u_.Set(1., size_x_-1, size_x_, 0, size_y_);
-  v_.Set(nv);
-  v_.Set(0., 0, 1, 0, size_y_);
-  v_.Set(0., size_x_-1, size_x_, 0, size_y_);
-  w_.Set(nw);
 }
 
-void PhysicalState::GrayScottStep() {
-  Field nu(size_x_, size_y_), nv(size_x_, size_y_), nw(size_x_, size_y_); 
-  double D1 = 0.00002;
-  double D2 = 0.00001;
-  double dx = 0.02;
-  double F = 0.037;
-  double k = 0.06;
-  double dt = 2.;
-  for(int i = 0; i<size_x_; ++i){
-    for(int j = 0; j<size_y_; ++j){
-      nu(i,j) =
-          u_(i, j)
-          + dt*(
-              D1/(dx*dx)*(u_(i+1, j)+u_(i-1, j)+u_(i, j+1)+u_(i, j-1)-4*u_(i, j))
-              - u_(i,j)*v_(i,j)*v_(i,j)
-              + F*(1-u_(i,j))
-              );
-      nv(i,j) =
-          v_(i, j)
-          + dt*(
-              D2/(dx*dx)*(v_(i+1, j)+v_(i-1, j)+v_(i, j+1)+v_(i, j-1)-4*v_(i, j))
-              + u_(i,j)*v_(i,j)*v_(i,j) 
-              - (F+k)*v_(i,j)
-              );
-    }
-  }
-  u_.Set(nu);
-  v_.Set(nv);
+void PhysicalState::ApplyBoundaryConditions() {
+  u_->Set(0., 0, 1, 0, size_y_);
+  u_->Set(1., size_x_-1, size_x_, 0, size_y_);
+  v_->Set(0., 0, 1, 0, size_y_);
+  v_->Set(0., size_x_-1, size_x_, 0, size_y_);
 }
 
-void PhysicalState::Step() {
-  JapanStep();
+void PhysicalState::SwapFieldsWithNew() {
+  u_.swap(nu_);
+  v_.swap(nv_);
+  w_.swap(nw_);
+
 }
 
 void PhysicalState::InitValues() {
-  u_.Set(1.);
-  v_.Set(0.);
-  w_.Set(1.);
-  u_.Set(0.4, 0.2, 0, 5, 0, size_y_);
-  v_.Set(0.6, 0.2, 0, 5, 0, size_y_);
+  u_->Set(1.);
+  v_->Set(0.);
+  w_->Set(1.);
+  u_->Set(0.4, 0.2, 0, 5, 0, size_y_);
+  v_->Set(0.6, 0.2, 0, 5, 0, size_y_);
 }
 
 void PhysicalState::Print(std::ostream& stream) {
   stream<<"u\n";
-  u_.Print(stream);
+  u_->Print(stream);
   stream<<"v\n";
-  v_.Print(stream);
+  v_->Print(stream);
   stream<<"w\n";
-  w_.Print(stream);
+  w_->Print(stream);
   stream<<'\n';
 }

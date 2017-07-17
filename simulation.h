@@ -1,12 +1,14 @@
 #include<physical_state.h>
 #include<fstream>
 #include<iostream>
+#include<vector>
 class Simulation {
  public:
   Simulation(
       int size_x,
       int size_y,
-      std::ostream& stream = std::cout
+      std::ostream& stream = std::cout,
+      int threads_number = 1
       );
   void Run();
   int Step();
@@ -15,4 +17,8 @@ class Simulation {
   PhysicalState physical_state_;
   int size_x_;
   int size_y_;
+  int threads_number_;
+  int last_time_stamp_;
+  std::vector<int> ranges_for_threads_;
+  void TimeStamp();
 };
