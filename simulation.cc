@@ -1,6 +1,5 @@
 #include<simulation.h>
 #include<iostream>
-#include<fstream>
 #include<thread>
 
 Simulation::Simulation(

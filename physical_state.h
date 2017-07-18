@@ -15,7 +15,7 @@ class Field {
   void Set(std::function<double(int,int)> function);
   void Set(std::function<double(int,int)> function, int x1, int x2, int y1, int y2);
   void Set(double value, int x1, int x2, int y1, int y2);
-  void Set(double base, double rand_base, int x1, int x2, int y1, int y2);
+  void SetRandom(double base, double multiplier, int x1, int x2, int y1, int y2);
   void Set(Field& field);
   void PartialSet(Field& field, int x_begin, int x_end);
   int size_x_;

@@ -55,10 +55,10 @@ void Field::Set(std::function<double(int,int)> function) {
   }
 } 
 
-void Field::Set(double base, double rand_base, int x1, int x2, int y1, int y2) {
+void Field::SetRandom(double base, double multiplier, int x1, int x2, int y1, int y2) {
   for(int i = x1; i<x2; ++i){
     for(int j = y1; j<y2; ++j){
-      data_[i][j] = base + rand_base*Random();
+      data_[i][j] = base + multiplier*Random();
     }
   }
 } 
@@ -168,7 +168,7 @@ void PhysicalState::PartialStepCalculation(int x_begin, int x_end) {
 void PhysicalState::ApplyBoundaryConditions() {
   u_->Set(0., 0, 1, 0, size_y_);
   u_->Set(0.1, size_x_-1, size_x_, 0, size_y_);
-  v_->Set(0., 0, 1, 0, size_y_);
+  v_->Set(1., 0, 1, 0, size_y_);
   v_->Set(0., size_x_-1, size_x_, 0, size_y_);
 }
 
@@ -181,15 +181,14 @@ void PhysicalState::SwapFieldsWithNew() {
 
 void PhysicalState::InitValues() {
   u_->Set(0.1);
-  v_->Set(0);
-  w_->Set(1.);
-  u_->Set(0.0, 0.1, 0, 10, 0, size_y_);
-  v_->Set(0, 1., 0, 10, 0, size_y_);
-
   u_->Set(0., 0, 1, 0, size_y_);
-  u_->Set(0.1, size_x_-1, size_x_, 0, size_y_);
-  v_->Set(1., 0, 1, 0, size_y_);
-  v_->Set(0., size_x_-1, size_x_, 0, size_y_);
+  u_->Set(1, size_x_-1, size_x_, 0, size_y_);
+  u_->SetRandom(0.0, 0.1, 0, 10, 0, size_y_);
+
+  v_->Set(0);
+  v_->SetRandom(0, 1., 0, 10, 0, size_y_);
+
+  w_->Set(1.);
 }
 
 void PhysicalState::Print(std::ostream& stream) {
