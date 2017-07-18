@@ -1,7 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
+import os
 
-file_in = open("out.txt", 'r')
+if len(sys.argv) < 2:
+    file_path = "out.txt"
+else:
+    file_path = sys.argv[1]
+
+if not os.path.exists(file_path):
+    sys.exit('ERROR: Datafile %s was not found!' % sys.argv[1])
+file_in = open(file_path, 'r')
 fig=plt.figure() 
 init = True
 print "plotting.."
