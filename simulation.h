@@ -16,7 +16,8 @@ class Simulation {
   int Step();
  private: 
   std::ostream& out_stream_;
-  PhysicalState physical_state_;
+  std::unique_ptr<PhysicalState> physical_state_;
+  std::unique_ptr<PhysicalState> new_state_;
   int size_x_;
   int size_y_;
   int steps_total_;
@@ -24,5 +25,9 @@ class Simulation {
   int threads_number_;
   int last_time_stamp_;
   std::vector<int> ranges_for_threads_;
+  void PartialStepCalculation(int x_begin, int x_end);
+  void InitValues();
+  void ApplyBoundaryConditions();
+  void SwapOldAndNewState();
   void TimeStamp();
 };

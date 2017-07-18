@@ -9,15 +9,16 @@ class Field {
       int size_y
       );
   ~Field();
-  double& operator()(int i, int j);
+  inline double& operator()(int i, int j){
+    if(i>=0 && i<size_x_ && j>=0 && j<size_y_)
+      return data_[i][j];
+    else
+      return data_[(i+size_x_)%size_x_][(j+size_y_)%size_y_];
+  }
   void Print(std::ostream& stream);
-  void Set(double value);
-  void Set(std::function<double(int,int)> function);
-  void Set(std::function<double(int,int)> function, int x1, int x2, int y1, int y2);
-  void Set(double value, int x1, int x2, int y1, int y2);
-  void SetRandom(double base, double multiplier, int x1, int x2, int y1, int y2);
-  void Set(Field& field);
-  void PartialSet(Field& field, int x_begin, int x_end);
+  void SetValue(double value);
+  void SetValuePart(double value, int x1, int x2, int y1, int y2);
+  void SetRandomPart(double base, double multiplier, int x1, int x2, int y1, int y2);
   int size_x_;
   int size_y_;
  private:
@@ -32,16 +33,9 @@ class PhysicalState {
       );
   int size_x_;
   int size_y_;
-  void InitValues();
-  void PartialStepCalculation(int x_begin, int x_end);
-  void ApplyBoundaryConditions();
-  void SwapFieldsWithNew();
   void Print(std::ostream& stream);
-  std::unique_ptr<Field> u_;
-  std::unique_ptr<Field> v_;
-  std::unique_ptr<Field> w_;
-  std::unique_ptr<Field> nu_;
-  std::unique_ptr<Field> nv_;
-  std::unique_ptr<Field> nw_;
+  Field u_;
+  Field v_;
+  Field w_;
  private:
 };
