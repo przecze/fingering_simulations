@@ -6,11 +6,15 @@
 Simulation::Simulation(
     int size_x,
     int size_y,
+    int steps_total,
+    int big_step,
     std::ostream& stream,
     int threads_number
     ) : 
     size_x_(size_x),
     size_y_(size_y),
+    steps_total_(steps_total),
+    big_step_(big_step),
     out_stream_(stream),
     threads_number_(threads_number),
     physical_state_(size_x, size_y),
@@ -28,19 +32,19 @@ Simulation::Simulation(
 
 void Simulation::Run() {
   std::cout<<"Running simulation!"<<std::endl;
+  TimeStamp();
   physical_state_.InitValues();
-  int steps = 4000;
-  for (int step_no = 0; step_no<steps; ++step_no) {
-    if (!(step_no%100)) {
+  for (int step_no = 0; step_no<steps_total_; ++step_no) {
+    if (big_step_!=-1 && !(step_no%big_step_)) {
       out_stream_<<"step "<<step_no<<'\n';
       physical_state_.Print(out_stream_);
-      std::cout<<"Step "<<step_no<<" / "<<steps<<std::endl;
+      std::cout<<"Step "<<step_no<<" / "<<steps_total_<<std::endl;
       TimeStamp();
     }
     Step();
   }
-  std::cout<<'|'<<std::endl;
-  out_stream_<<"step "<<1000<<'\n';
+  TimeStamp();
+  out_stream_<<"step "<<steps_total_<<'\n';
   physical_state_.Print(out_stream_);
   
 }

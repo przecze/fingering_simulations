@@ -167,7 +167,7 @@ void PhysicalState::PartialStepCalculation(int x_begin, int x_end) {
 
 void PhysicalState::ApplyBoundaryConditions() {
   u_->Set(0., 0, 1, 0, size_y_);
-  u_->Set(1., size_x_-1, size_x_, 0, size_y_);
+  u_->Set(0.1, size_x_-1, size_x_, 0, size_y_);
   v_->Set(0., 0, 1, 0, size_y_);
   v_->Set(0., size_x_-1, size_x_, 0, size_y_);
 }
@@ -180,11 +180,16 @@ void PhysicalState::SwapFieldsWithNew() {
 }
 
 void PhysicalState::InitValues() {
-  u_->Set(1.);
-  v_->Set(0.);
+  u_->Set(0.1);
+  v_->Set(0);
   w_->Set(1.);
-  u_->Set(0.4, 0.2, 0, 5, 0, size_y_);
-  v_->Set(0.6, 0.2, 0, 5, 0, size_y_);
+  u_->Set(0.0, 0.1, 0, 10, 0, size_y_);
+  v_->Set(0, 1., 0, 10, 0, size_y_);
+
+  u_->Set(0., 0, 1, 0, size_y_);
+  u_->Set(0.1, size_x_-1, size_x_, 0, size_y_);
+  v_->Set(1., 0, 1, 0, size_y_);
+  v_->Set(0., size_x_-1, size_x_, 0, size_y_);
 }
 
 void PhysicalState::Print(std::ostream& stream) {
