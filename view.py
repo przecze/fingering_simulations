@@ -1,7 +1,10 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import sys
 import os
+if "SSH_CONNECTION" in os.environ:
+    import matplotlib
+    matplotlib.use('GTK')
+import matplotlib.pyplot as plt
 
 if len(sys.argv) < 2:
     file_path = "out.txt"
