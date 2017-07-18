@@ -155,6 +155,6 @@ void Simulation::TimeStamp(){
   
   int new_time_stamp = duration_cast< milliseconds >(
       system_clock::now().time_since_epoch()).count();
-  std::cout<<"Simulation::TimeStamp : "<<new_time_stamp<<", "<<new_time_stamp-last_time_stamp_<<" since last time stamp"<<std::endl;
+  std::cout<<"Simulation::TimeStamp : threads:"<<threads_number_<<", "<<new_time_stamp-last_time_stamp_<<"ms since last time stamp"<<std::endl;
   last_time_stamp_ = new_time_stamp;
 }
