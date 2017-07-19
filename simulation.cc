@@ -70,23 +70,6 @@ int Simulation::Step() {
 }
 
 void Simulation::PartialStepCalculation(int x_begin, int x_end) {
-  double dt = 0.0025;
-  double dx = 0.5   ;
-  double D1 = 1.    ;
-  double D2 = 1.    ;
-  double theta=1.94;
-  double beta=20.  ;
-  double gamma=5.  ;
-  double ha=0.328  ;
-  double phi=0.458 ;
-  double w0=0.1    ;
-  double v0=1.0    ;
-  double sigma=0.02;
-  double lam=0.0   ;
-  double haw=1.0   ;
-  double Pe=.4     ;
-  double vp=0.45   ;
-  double Le=0.1    ;
 
   Field& U(physical_state_->u_);
   Field& V(physical_state_->v_);
@@ -96,30 +79,43 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   Field& NV(new_state_->v_);
   Field& NW(new_state_->w_);
   
+  const double dt = 0.0025;
+  const double dx = 0.5   ;
+  const double theta=1.94;
+  const double beta=20.  ;
+  const double gamma=5.  ;
+  const double ha=0.328  ;
+  const double phi=0.458 ;
+  const double sigma=0.02;
+  const double lam=0.0   ;
+  const double haw=1.0   ;
+  const double Pe=.4     ;
+  const double vp=0.45   ;
+  const double Le=0.1    ;
   
   for (int i = x_begin; i<x_end; ++i) {
     for (int j = 0; j<size_y_; ++j) {
 
-      register double u = U(i,j);
-      register double v = V(i,j);
-      register double w = W(i,j);
-      register double f = gamma*(v>vp?1:0)*(w>0?1:0)*u*theta*exp(theta-theta/v);
+      double u = U(i,j);
+      double v = V(i,j);
+      double w = W(i,j);
+      double f = (v>vp?1:0)*(w>0?1:0)*u*theta*exp(theta-theta/v);
 
       NU(i,j) = u + 
           dt*(
-              (1./(phi*Le*dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
-              - f/phi
-              - Pe/dx/2.0*(U(i+1,j) - U(i-1,j))
+              (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
+              - gamma*f/phi
+              - Pe/dx/2.0*(U(i-1,j) - U(i+1,j))
               );
 
       NV(i,j) = v +
           dt*(
               0.3/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
-              +  beta*f
-              -Pe*phi*lam/dx/2.0*(V(i+1,j)-V(i-1,j))
+              +  beta*gamma*f
+              -Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
               -ha*(v-sigma)
               );
-      register double new_w = w - haw*dt*f;
+      double new_w = w - haw*dt*gamma*f;
       NW(i,j) = (new_w>0?new_w:0);
 
     }
@@ -128,7 +124,14 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
 void Simulation::ApplyBoundaryConditions() {
   new_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
-  new_state_->u_.SetValuePart(0.1, size_x_-1, size_x_, 0, size_y_);
+  const double dx = 0.5   ;
+  const double Pe=.4     ;
+  const double Le=0.1    ;
+  const double phi=0.458 ;
+  for(int j = 0; j<size_y_; ++j){
+    new_state_->u_(size_x_-1, j) = 0.1*(new_state_->u_(size_x_-2,j) + dx*Pe*Le*phi)/(0.1+dx*Pe*Le*phi);
+  }
+  //new_state_->u_.SetValuePart(0.1, size_x_-1, size_x_, 0, size_y_);
   new_state_->v_.SetValuePart(1., 0, 1, 0, size_y_);
   new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
 }
@@ -155,6 +158,6 @@ void Simulation::TimeStamp(){
   
   int new_time_stamp = duration_cast< milliseconds >(
       system_clock::now().time_since_epoch()).count();
-  std::cout<<"Simulation::TimeStamp : threads:"<<threads_number_<<", "<<new_time_stamp-last_time_stamp_<<"ms since last time stamp"<<std::endl;
+  std::cout<<"Simulation::TimeStamp : threads:"<<threads_number_<<", "<<(new_time_stamp-last_time_stamp_)*0.001<<"s since last time stamp"<<std::endl;
   last_time_stamp_ = new_time_stamp;
 }
