@@ -1,2 +1,2 @@
 echo Building...
-g++ -Wall -o output main.cc analyser.cc physical_state.cc simulation.cc -I . -pthread -std=c++11
+g++ -o output main.cc analyser.cc physical_state.cc simulation.cc -I . -pthread -std=c++11

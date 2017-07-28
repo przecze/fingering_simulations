@@ -35,5 +35,9 @@ while(file_in):
         print "added ", name,  'max= ', np.max(data[field,:,:])
         cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
         init = False
+    ax = plt.subplot("22"+"4")
+    cax = ax.imshow(np.greater(data[2],0.8), interpolation='nearest')
+    cax.set_clim(vmin=0, vmax=1)
+    print "added special"
+    cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
     plt.pause(0.1)
-    file_in.readline() #TODO fix a bug at the and of the program

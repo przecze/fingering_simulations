@@ -84,5 +84,4 @@ void PhysicalState::Print(std::ostream& stream) {
   v_.Print(stream);
   stream<<"w\n";
   w_.Print(stream);
-  stream<<'\n';
 }

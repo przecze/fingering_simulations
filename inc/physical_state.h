@@ -1,3 +1,5 @@
+#ifndef PHYSIAL_STATE_H
+#define PHYSIAL_STATE_H
 #include<fstream>
 #include<functional>
 #include<memory>
@@ -39,3 +41,4 @@ class PhysicalState {
   Field w_;
  private:
 };
+#endif

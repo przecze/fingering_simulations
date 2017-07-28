@@ -89,7 +89,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   const double sigma=0.02;
   const double lam=0.0   ;
   const double haw=1.0   ;
-  const double Pe=.8     ;
+  //const double Pe=1.6     ;
   const double vp=0.45   ;
   const double Le=0.1    ;
   
@@ -125,7 +125,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 void Simulation::ApplyBoundaryConditions() {
   new_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
   const double dx = 0.5   ;
-  const double Pe=.8     ;
+  //const double Pe=0.3     ;
   const double Le=0.1    ;
   const double phi=0.458 ;
   for(int j = 0; j<size_y_; ++j){

@@ -30,4 +30,5 @@ class Simulation {
   void ApplyBoundaryConditions();
   void SwapOldAndNewState();
   void TimeStamp();
+  constexpr static double Pe = 0.3;
 };
