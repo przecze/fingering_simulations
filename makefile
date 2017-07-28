@@ -23,8 +23,8 @@ obj/physical_state.o : src/physical_state.cc
 obj/simulation.o : src/simulation.cc
 	g++ -c $(FLAGS) -o $@ $^
 
-obj/analyser.o : src/analyser.cc
-	g++ -c $(FLAGS) -o $@ $^
+obj/analyser.o : src/analyser.cc inc/analyser.h
+	g++ -c $(FLAGS) -o $@ src/analyser.cc
 
 # To obtain object files
 #obj/%.o: src/%.cpp

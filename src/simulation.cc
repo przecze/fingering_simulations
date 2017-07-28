@@ -79,19 +79,6 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   Field& NV(new_state_->v_);
   Field& NW(new_state_->w_);
   
-  const double dt = 0.0025;
-  const double dx = 0.5   ;
-  const double theta=1.94;
-  const double beta=20.  ;
-  const double gamma=5.  ;
-  const double ha=0.328  ;
-  const double phi=0.458 ;
-  const double sigma=0.02;
-  const double lam=0.0   ;
-  const double haw=1.0   ;
-  //const double Pe=1.6     ;
-  const double vp=0.45   ;
-  const double Le=0.1    ;
   
   for (int i = x_begin; i<x_end; ++i) {
     for (int j = 0; j<size_y_; ++j) {
@@ -122,12 +109,9 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   }
 }
 
+
 void Simulation::ApplyBoundaryConditions() {
   new_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
-  const double dx = 0.5   ;
-  //const double Pe=0.3     ;
-  const double Le=0.1    ;
-  const double phi=0.458 ;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = 0.1*(new_state_->u_(size_x_-2,j) + dx*Pe*Le*phi)/(0.1+dx*Pe*Le*phi);
   }

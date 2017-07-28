@@ -31,4 +31,16 @@ class Simulation {
   void SwapOldAndNewState();
   void TimeStamp();
   constexpr static double Pe = 0.3;
+  constexpr static double dt = 0.0025;
+  constexpr static double dx = 0.5   ;
+  constexpr static double theta=1.94;
+  constexpr static double beta=20.  ;
+  constexpr static double gamma=5.  ;
+  constexpr static double ha=0.328  ;
+  constexpr static double phi=0.458 ;
+  constexpr static double sigma=0.02;
+  constexpr static double lam=0.0   ;
+  constexpr static double haw=1.0   ;
+  constexpr static double vp=0.45   ;
+  constexpr static double Le=0.1    ;
 };

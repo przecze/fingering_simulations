@@ -9,8 +9,8 @@ void CreateAndRunSimulation(std::ostream& out_file, double Pe){
   std::cout<<"Creating simulation"<<std::endl; 
   int size_x = 200;
   int size_y = 100;
-  int steps_total = 30000;
-  int big_step = 10000;
+  int steps_total = 8000;
+  int big_step = 1000;
   int threads_no = 4;
   Simulation simulation(
       size_x,
