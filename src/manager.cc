@@ -28,10 +28,10 @@ void Manager::RunSimulations() {
     simulations_.push_back(Simulation(
           500,
           500,
-          100000,
+          400000,
           5000,
           *(out_streams_[i]),
-          4,
+          12,
           Pe_values_[i]));
   }
   std::vector<std::thread> threads;
