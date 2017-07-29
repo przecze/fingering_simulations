@@ -26,12 +26,12 @@ void Manager::RunSimulations() {
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
-          100,
-          100,
+          500,
+          500,
+          30000,
           1000,
-          100,
           *(out_streams_[i]),
-          4,
+          10,
           Pe_values_[i]));
   }
   std::vector<std::thread> threads;
