@@ -4,7 +4,9 @@
 
 int main(){
   std::cout<<"begin"<<std::endl;
-  auto manager = Manager({0.3});
-  manager.Run();
+  //try {
+    auto manager = Manager({0.3, 0.5, 0.7});
+    manager.Run();
+  //} catch(...) { std::cout<<"problem!"<<std::endl; }
   return 0;
 }

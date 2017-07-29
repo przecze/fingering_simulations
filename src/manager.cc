@@ -13,6 +13,7 @@
 Manager::Manager(std::vector<double> Pe_values) :
     Pe_values_(Pe_values),
     simulations_num_(Pe_values.size()){
+  std::cout<<"manager created"<<std::endl;
   GenerateFileNames();
 }
 
@@ -49,10 +50,50 @@ void Manager::RunSimulations() {
 
 void Manager::RunAnalyses() {
   OpenFilesForIn();
-  for(auto& in_str : in_streams_) {
-    Analyser a(*(in_str), std::cout);
+  for(int i = 0; i<simulations_num_; ++i) {
+    auto tmp_u_ptr = std::unique_ptr<std::stringstream>(new std::stringstream());
+    analyses_results_.push_back(std::move(tmp_u_ptr));
+  }
+  for(int i = 0 ; i<simulations_num_; ++i) {
+    Analyser a(*(in_streams_[i]), *(analyses_results_[i]) );
     a.PerformAnalysis();
   }
+  PrintPeValues();
+  PrintFetchedData();
+  
+}
+
+void Manager::PrintPeValues() {
+  std::ofstream stream("run_outs/pe_values.out", std::ofstream::out);
+  for(auto Pe : Pe_values_){
+    stream<<Pe<<" ";
+  }
+  stream<<'\n';
+  stream.close();
+}
+
+void Manager::PrintFetchedData() {
+  std::ofstream print_stream("run_outs/front_positions.out", std::ofstream::out);
+  int step_no;
+  int position;
+  while(*(analyses_results_[0])>>step_no) {
+    std::cout<<"fetching step "<<step_no<<std::endl;
+    *(analyses_results_[0])>>position;
+    std::cout<<"pos from 0 stream "<<position<<std::endl;
+    print_stream<<step_no<<" "<<position<<" ";//print data from first stream
+    for(int i = 1; i<simulations_num_; ++i){//print data from other streams
+      int step;
+      *(analyses_results_[i])>>step;
+      if(step!=step_no){
+        std::cout<<"Serialization error! "<<step<<" vs "<<step_no<<std::endl;
+      }
+      *(analyses_results_[i])>>position;
+      std::cout<<"pos from " <<i <<" stream "<<position<<std::endl;
+      print_stream<<position<<" ";
+    }
+    print_stream<<'\n';
+  }
+  print_stream.close();
 }
 
 void Manager::GenerateFileNames() {
