@@ -1,3 +1,5 @@
+#ifndef ANALYSER_H
+#define ANALYSER_H
 #include<iostream>
 #include<physical_state.h>
 
@@ -9,8 +11,8 @@ class Analyser {
       );
   void PrintAnalysedField();
   void PerformAnalysis();
- private:
   void RewriteData();
+ private:
   void SkipFieldFromInput();
   void ReadFieldFromInput();
   void UpdateFrontPosition();
@@ -24,3 +26,5 @@ class Analyser {
   int front_position_;
 
 };
+
+#endif

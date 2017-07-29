@@ -1,6 +1,6 @@
 #include<simulation.h>
 #include<iostream>
-#include<thread>
+#include<future>
 #include<cmath>
 
 Simulation::Simulation(
@@ -9,7 +9,8 @@ Simulation::Simulation(
     int steps_total,
     int big_step,
     std::ostream& stream,
-    int threads_number
+    int threads_number,
+    double Pe
     ) : 
     size_x_(size_x),
     size_y_(size_y),
@@ -19,7 +20,8 @@ Simulation::Simulation(
     threads_number_(threads_number),
     physical_state_(new PhysicalState (size_x, size_y)),
     new_state_(new PhysicalState(size_x, size_y)),
-    last_time_stamp_(0)
+    last_time_stamp_(0),
+    Pe(Pe)
     {
   for (int x_end = size_x/threads_number; x_end<size_x; x_end+=size_x/threads_number) {
     ranges_for_threads_.push_back(x_end);
@@ -61,8 +63,8 @@ int Simulation::Step() {
         this->PartialStepCalculation(x_begin, x_end);
         }));
   }
-  for(int i = 0; i<threads_number_; ++i){
-    threads[i].join();
+  for(auto& thr : threads){
+    thr.join();
   }
   ApplyBoundaryConditions();
   SwapOldAndNewState();
@@ -74,7 +76,6 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   Field& U(physical_state_->u_);
   Field& V(physical_state_->v_);
   Field& W(physical_state_->w_);
-
   Field& NU(new_state_->u_);
   Field& NV(new_state_->v_);
   Field& NW(new_state_->w_);
@@ -83,10 +84,10 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   for (int i = x_begin; i<x_end; ++i) {
     for (int j = 0; j<size_y_; ++j) {
 
-      double u = U(i,j);
-      double v = V(i,j);
-      double w = W(i,j);
-      double f = (v>vp?1:0)*(w>0?1:0)*u*theta*exp(theta-theta/v);
+      const double u = U(i,j);
+      const double v = V(i,j);
+      const double w = W(i,j);
+      const double f = (v>vp?1:0)*(w>0?1:0)*u*theta*exp(theta-theta/v);
 
       NU(i,j) = u + 
           dt*(

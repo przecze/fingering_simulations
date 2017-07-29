@@ -1,3 +1,5 @@
+#ifndef SIMULATION_H
+#define SIMULATION_H
 #include<physical_state.h>
 #include<fstream>
 #include<iostream>
@@ -10,7 +12,8 @@ class Simulation {
       int steps_total,
       int big_step,
       std::ostream& stream = std::cout,
-      int threads_number = 1
+      int threads_number = 1,
+      double Pe = 0.3
       );
   void Run();
   int Step();
@@ -30,7 +33,7 @@ class Simulation {
   void ApplyBoundaryConditions();
   void SwapOldAndNewState();
   void TimeStamp();
-  constexpr static double Pe = 0.3;
+  const double Pe;
   constexpr static double dt = 0.0025;
   constexpr static double dx = 0.5   ;
   constexpr static double theta=1.94;
@@ -44,3 +47,4 @@ class Simulation {
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.1    ;
 };
+#endif
