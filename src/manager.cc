@@ -29,9 +29,9 @@ void Manager::RunSimulations() {
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
           500,
-          500,
-          30000,
-          6000,
+          800,
+          50000,
+          5000,
           *(out_streams_[i]),
           threads_per_simulation_,
           Pe_values_[i]));
