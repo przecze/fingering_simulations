@@ -11,7 +11,7 @@ OBJECTS=$(addprefix obj/,$(notdir $(SOURCES:.cc=.o)))
 #	@echo $(SOURCES)
 
 # Main target
-output : main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manager.o
+exec : main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manager.o
 	g++ $(FLAGS) $(OBJECTS) main.o -o output
  
 main.o : main.cc

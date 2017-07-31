@@ -31,12 +31,16 @@ while(file_in):
             data[field,i,:] = file_in.readline().split()
         ax = plt.subplot("22"+str(field+1))
         cax = ax.imshow(data[field], interpolation='nearest')
-        cax.set_clim(vmin=0, vmax=1)
+        if field==0:
+                cax.set_clim(vmin=0, vmax=0.1)
+                cbar = fig.colorbar(cax, orientation='vertical')
+        else:
+                cax.set_clim(vmin=0, vmax=1)
+                cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
         print "added ", name,  'max= ', np.max(data[field,:,:])
-        cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
         init = False
     ax = plt.subplot("22"+"4")
-    cax = ax.imshow(np.greater(data[2],0.8), interpolation='nearest')
+    cax = ax.imshow(np.greater(data[2],0.9), interpolation='nearest')
     cax.set_clim(vmin=0, vmax=1)
     print "added special"
     cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')

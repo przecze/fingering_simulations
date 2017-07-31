@@ -43,8 +43,8 @@ while(file_in):
     #cax.set_clim(vmin=-2, vmax=2)
     #cax.set_clim(vmin=0, vmax=1)
     cbar = fig.colorbar(cax, orientation='vertical')
-    cut = fourier[:,1:498]
-    cax = ax.imshow(cut, interpolation='nearest')
+    cut = fourier[:,1:50]
+    cax = ax.imshow(cut, interpolation='nearest', aspect='auto')
     cax.set_clim(np.min(cut),np.max(cut))
     #plt.plot(cut)
     #ax.set_ylim(np.min(cut),np.max(cut))
