@@ -26,10 +26,10 @@ void Manager::RunSimulations() {
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
-          1000,
+          300,
           500,
-          500000,
-          5000,
+          3000,
+          1000,
           *(out_streams_[i]),
           4,
           Pe_values_[i]));
@@ -99,7 +99,7 @@ void Manager::PrintFetchedData() {
 void Manager::GenerateFileNames() {
   std::stringstream converter;
   for(int i = 0; i< simulations_num_; ++i) {
-    converter<<"out/sim"<<((i<10)?"00":"0")<<i<<".out\n";
+    converter<<"out/sim"<<((i<10)?"00":"0")<<i<<"\n";
     std::string name;
     converter>>name;
     file_names_.push_back(name);

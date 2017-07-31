@@ -2,7 +2,7 @@
 FLAGS = -Iinc -Lobj -pthread -std=c++11
  
 # File names
-EXEC = output
+EXEC = exec
 SOURCES=$(wildcard src/*.cc)
 OBJECTS=$(addprefix obj/,$(notdir $(SOURCES:.cc=.o)))
  
@@ -12,7 +12,7 @@ OBJECTS=$(addprefix obj/,$(notdir $(SOURCES:.cc=.o)))
 
 # Main target
 exec : main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manager.o
-	g++ $(FLAGS) $(OBJECTS) main.o -o output
+	g++ $(FLAGS) $(OBJECTS) main.o -o exec
  
 main.o : main.cc
 	g++ -c $(FLAGS) -o main.o main.cc
