@@ -13,6 +13,7 @@ class Manager {
   void Run();
   void RunSimulations();
   void RunAnalyses();
+  int threads_per_simulation_;
  private:
   std::vector<std::string> file_names_;
   std::vector<Simulation> simulations_;

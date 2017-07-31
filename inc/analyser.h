@@ -21,7 +21,7 @@ class Analyser {
   std::istream& input_stream_;
   std::ostream& output_stream_;
   std::unique_ptr<Field> analysed_field_;
-  static constexpr double burn_offset_ = 0.8;
+  static constexpr double burn_offset_ = 0.9;
   int current_step_;
   int front_position_;
 

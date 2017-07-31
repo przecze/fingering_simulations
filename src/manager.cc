@@ -12,9 +12,11 @@
 
 Manager::Manager(std::vector<double> Pe_values) :
     Pe_values_(Pe_values),
-    simulations_num_(Pe_values.size()){
+    simulations_num_(Pe_values.size()),
+    threads_per_simulation_(4) {
   std::cout<<"manager created"<<std::endl;
   GenerateFileNames();
+  PrintPeValues();
 }
 
 void Manager::Run() {
@@ -26,12 +28,12 @@ void Manager::RunSimulations() {
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
-          300,
           500,
-          3000,
-          1000,
+          500,
+          30000,
+          6000,
           *(out_streams_[i]),
-          4,
+          threads_per_simulation_,
           Pe_values_[i]));
   }
   std::vector<std::thread> threads;
@@ -58,7 +60,6 @@ void Manager::RunAnalyses() {
     Analyser a(*(in_streams_[i]), *(analyses_results_[i]) );
     a.PerformAnalysis();
   }
-  PrintPeValues();
   PrintFetchedData();
   
 }
@@ -76,6 +77,11 @@ void Manager::PrintFetchedData() {
   std::ofstream print_stream("out/front_positions.out", std::ofstream::out);
   int step_no;
   int position;
+  print_stream<<"Step\n";
+  for(auto Pe : Pe_values_){
+    print_stream<<Pe<<" ";
+  }
+  print_stream<<'\n';
   while(*(analyses_results_[0])>>step_no) {
     std::cout<<"fetching step "<<step_no<<std::endl;
     *(analyses_results_[0])>>position;
