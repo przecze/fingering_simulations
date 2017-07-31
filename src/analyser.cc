@@ -13,8 +13,8 @@ Analyser::Analyser(
 }
 
 bool Analyser::CheckIfLineBurned(int line_num) {
-  for(int j = 0; j<analysed_field_->size_y_; ++j) {
-    if((*analysed_field_)(line_num, j)<burn_offset_) {
+  for(int j = 0; j<w_->size_y_; ++j) {
+    if((*w_)(line_num, j)<burn_offset_) {
         return true;
     }
   }
@@ -32,8 +32,8 @@ void Analyser::SkipFieldFromInput() {
   char field_name;
   input_stream_>>field_name;
   input_stream_>>size_x>>size_y;
-  if (!analysed_field_) {
-    analysed_field_ = std::unique_ptr<Field>(new Field(size_x, size_y));
+  if (!w_) {
+    w_ = std::unique_ptr<Field>(new Field(size_x, size_y));
   }
   std::string s;
   for(int i = 0; i<size_x+1; ++i) {
@@ -49,12 +49,25 @@ void Analyser::ReadFieldFromInput() {
   int size_x;
   int size_y;
   input_stream_>>size_x>>size_y;
-  if (!analysed_field_) {
-    analysed_field_ = std::unique_ptr<Field>(new Field(size_x, size_y));
+  if (!u_) {
+    w_ = std::unique_ptr<Field>(new Field(size_x, size_y));
+    v_ = std::unique_ptr<Field>(new Field(size_x, size_y));
+    u_ = std::unique_ptr<Field>(new Field(size_x, size_y));
   }
+  Field* ptr;
+  if (field_name=='u') {
+    ptr = u_.get();
+  }
+  if (field_name=='v') {
+    ptr = v_.get();
+  }
+  if (field_name=='w') {
+    ptr = w_.get();
+  }
+  Field& field = *ptr;
   for(int i = 0; i<size_x; ++i){
     for(int j = 0; j<size_y; ++j) {
-      input_stream_>>(*analysed_field_)(i,j);
+      input_stream_>>field(i,j);
     }
   }
 
@@ -68,14 +81,20 @@ bool Analyser::ReadStepLine() {
 }
 
 void Analyser::UpdateFrontPosition() {
-  while(front_position_<(analysed_field_->size_x_) && CheckIfLineBurned(front_position_)){
-    ++front_position_;
+  int next_front_position = front_position_;
+  while(next_front_position<(w_->size_x_) && CheckIfLineBurned(next_front_position)){
+    ++next_front_position;
   }
+  if (next_front_position == w_->size_x_ - 1) {
+    AnalyseFingers();
+  }
+  front_position_ = next_front_position;
+  std::cout<<"new front pos: " <<front_position_<<std::endl;
 }
 
 void Analyser::PerformAnalysis() {
   while(ReadStepLine()) {
-    SkipFieldFromInput();
+    ReadFieldFromInput();
     SkipFieldFromInput();
     ReadFieldFromInput();
     std::string dummy;
@@ -83,9 +102,95 @@ void Analyser::PerformAnalysis() {
     UpdateFrontPosition();
     std::cout<<current_step_<<" "<<front_position_<<'\n';
     output_stream_<<current_step_<<" "<<front_position_<<std::endl;
+    
+  }
+  AnalyseTips();
+  AnalyseFingers();
+}
+
+void Analyser::AnalyseFingers() {
+  int size_y = w_->size_y_;
+  int size_x = w_->size_x_;
+  for (int i = 0; i<size_x; ++i) {
+    int finger_count = 0;
+    int burn_count = 0;
+    bool last_burned = (((*w_)(i,0)<burn_offset_)?true:false);
+    for(int j = 0; j<size_y; ++j) {
+      bool point_burned = (((*w_)(i,j)<burn_offset_)?true:false);
+      burn_count += point_burned;
+      if (last_burned != point_burned) {
+        ++finger_count;
+        last_burned = point_burned;
+      }
+    }
+
+    if (last_burned != (((*w_)(i,0)<burn_offset_)?true:false)) {
+      ++finger_count;
+      std::cout<<"finger at edge"<<std::endl;
+    }
+    finger_count/=2;
+    int finger_width;
+    int finger_dist;
+
+    if(finger_count) {
+      finger_width = burn_count/finger_count;
+      finger_dist = size_y/finger_count;
+    } else {
+      finger_width = -1;
+      finger_dist = -1;
+    }
+    
+    if (finger_count%2==1) {
+      std::cout<<"odd finger count!"<<finger_count<<std::endl;
+    } else {
+      std::cout<<i<<" "<<finger_count<<" "<<finger_width<<" "<<finger_dist<<std::endl;
+    }
   }
 }
 
-void Analyser::PrintAnalysedField() {
-  analysed_field_->Print(std::cout);
+void Analyser::AnalyseTips() {
+  UpdateFrontPosition();
+  int size_y = w_->size_y_;
+  int size_x = w_->size_x_;
+  int i = front_position_ - 3;
+
+
+  bool last_burned = (((*w_)(i,0)<burn_offset_)?true:false);
+  int tip_size = 0;
+
+  for(int j = 0; j<size_y; ++j) {
+    bool point_burned = (((*w_)(i,j)<burn_offset_)?true:false);
+    if (point_burned){
+      ++tip_size;
+    }
+    if (last_burned && !point_burned) {
+      double ret  = CalculateTipFlow(i, j-tip_size/2, tip_size);
+      std::cout<<"tip "<<i<<", "<<j-tip_size/2<<" flow: "<<ret<<std::endl;
+      tip_size = 0;
+    }
+    last_burned  = point_burned;
+  }
+
+}
+
+double Analyser::CalculateTipFlow(int it, int jt, int r) {
+  double result = 0;
+  for (int i = it - r; i < it + r; ++i) {
+    for (int j = jt - r; j < jt + r; ++j) {
+      if ((i-it)*(i-it)+(j-jt)*(j-jt) < r*r) {
+        result -= 4*(*u_)(i,j) - (*u_)(i - 1,j) - (*u_)(i + 1,j) - (*u_)(i,j-1) - (*u_)(i,j+1);
+      }
+    }
+  }
+  return result;
+}
+
+void Analyser::PrintStepLine(std::ostream& os) {
+  os<<"step "<<current_step_<<'\n';
+}
+
+void Analyser::PrintAnalysedField(std::ostream& os) {
+  u_->Print(os);
+  v_->Print(os);
+  w_->Print(os);
 }

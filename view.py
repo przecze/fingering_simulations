@@ -7,7 +7,7 @@ if "SSH_CONNECTION" in os.environ:
 import matplotlib.pyplot as plt
 
 if len(sys.argv) < 2:
-    file_path = "out.txt"
+    file_path = "out/sim000"
 else:
     file_path = sys.argv[1]
 
@@ -45,3 +45,4 @@ while(file_in):
     print "added special"
     cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
     plt.pause(0.1)
+    plt.show();

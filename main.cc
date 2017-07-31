@@ -1,13 +1,15 @@
 #include<manager.h>
+#include<analyser.h>
 #include<cstring>
 #include<iostream>
+#include<fstream>
 
 int main(){
   std::cout<<"begin"<<std::endl;
   //try {
-    auto manager = Manager({0.1, 0.5, 1., 2., 5., 10., 15., 20.});
-    manager.threads_per_simulation_ = 7;
-    manager.Run();
   //} catch(...) { std::cout<<"problem!"<<std::endl; }
+  std::ifstream file("sim001.out", std::ifstream::in);
+  auto analyser = Analyser(file, std::cout);
+  analyser.PerformAnalysis();
   return 0;
 }

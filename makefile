@@ -11,11 +11,11 @@ OBJECTS=$(addprefix obj/,$(notdir $(SOURCES:.cc=.o)))
 #	@echo $(SOURCES)
 
 # Main target
-exec : main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manager.o
-	g++ $(FLAGS) $(OBJECTS) main.o -o exec
+exec : obj/main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manager.o
+	g++ $(FLAGS) $(OBJECTS) obj/main.o -o exec
  
-main.o : main.cc
-	g++ -c $(FLAGS) -o main.o main.cc
+obj/main.o : main.cc
+	g++ -c $(FLAGS) -o obj/main.o main.cc
 
 obj/physical_state.o : src/physical_state.cc
 	g++ -c $(FLAGS) -o $@ $^
@@ -33,6 +33,4 @@ obj/manager.o : src/manager.cc inc/manager.h
 #obj/%.o: src/%.cpp
 #	$(CC) -c $(CC_FLAGS) $< -o $@
  
-# To remove generated files
-clean:
-	rm -f main.o	
+
