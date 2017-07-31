@@ -64,7 +64,7 @@ void Manager::RunAnalyses() {
 }
 
 void Manager::PrintPeValues() {
-  std::ofstream stream("run_outs/pe_values.out", std::ofstream::out);
+  std::ofstream stream("out/pe_values.out", std::ofstream::out);
   for(auto Pe : Pe_values_){
     stream<<Pe<<" ";
   }
@@ -73,7 +73,7 @@ void Manager::PrintPeValues() {
 }
 
 void Manager::PrintFetchedData() {
-  std::ofstream print_stream("run_outs/front_positions.out", std::ofstream::out);
+  std::ofstream print_stream("out/front_positions.out", std::ofstream::out);
   int step_no;
   int position;
   while(*(analyses_results_[0])>>step_no) {
@@ -99,7 +99,7 @@ void Manager::PrintFetchedData() {
 void Manager::GenerateFileNames() {
   std::stringstream converter;
   for(int i = 0; i< simulations_num_; ++i) {
-    converter<<"run_outs/sim"<<((i<10)?"00":"0")<<i<<".out\n";
+    converter<<"out/sim"<<((i<10)?"00":"0")<<i<<".out\n";
     std::string name;
     converter>>name;
     file_names_.push_back(name);
