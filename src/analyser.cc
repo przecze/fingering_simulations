@@ -1,15 +1,28 @@
 #include<analyser.h>
 #include<cstring>
+#include<iomanip>
 #include<algorithm>
 
-Tip::Tip(int i, int j) : x_max(i), x_min(i), y_max(j), y_min(j) {
+Tip::Tip(int i, int j) :
+    x_max(i), x_min(i),
+    y_max(j), y_min(j),
+    parent(nullptr) {
 }
 
-void Tip::Add(int x, int y) {
-  x_min = std::min(x_min, x);
-  x_max = std::max(x_max, x);
-  y_max = std::max(y_max, y);
-  y_min = std::min(y_min, y);
+void Tip::Add(int i, int j) {
+  x_min = std::min(x_min, i);
+  x_max = std::max(x_max, i);
+  y_max = std::max(y_max, j);
+  y_min = std::min(y_min, j);
+  x = (x_min + x_max)/2;
+  y = (y_min + y_max)/2;
+  
+}
+
+int Tip::Dist(const Tip& tip, int size_x) {
+  int x_dist = std::max(tip.x-x, x-tip.x);
+  x_dist = std::min(x_dist, size_x - x_dist);
+  return (tip.y-y)*(tip.y-y) + x_dist*x_dist;
 }
 
 
@@ -20,12 +33,20 @@ Analyser::Analyser(
     input_stream_(input_stream),
     output_stream_(output_stream),
     front_position_(10),
-    current_step_(0)
+    current_step_(0),
+    tip_num_(0)
     {
 }
 
 bool Analyser::VPointBurned(int i, int j) {
   return (*v_)(i,j)>min_v_;
+}
+
+void Analyser::SortTips() {
+  std::sort(tips_.begin(), tips_.end(),
+      [](const Tip& a, const Tip& b)->bool {
+        return a.y < b.y;
+      });
 }
 
 void Analyser::FindTips() {
@@ -38,20 +59,15 @@ void Analyser::FindTips() {
     for(int j = 0; j<size_y; ++j) {
       if(marked(i,j) ==1 && VPointBurned(i,j)) {
         tips_.push_back(Tip(i,j));
-        std::cout<<"start marking region "<<i<<" "<<j<<std::endl;
         Mark(marked, tips_.back(), i, j);
-        std::cout<<"\nend marking region "<<i<<" "<<j<<std::endl;
       }
     }
   }
-  std::cout<<"leave findtips"<<std::endl;
-  PrintTips();
 }
 
 void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
   marked(i, j) = 0;
   tip.Add(i,j);
-  std::cout<<"(" << i << " " << j<< ")";
   int ni;
   int nj;
   for (int magic = 0; magic < 4; ++magic) {
@@ -65,9 +81,20 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 
 void Analyser::PrintTips() {
   for(auto& tip : tips_) {
-    std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
-              << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
+    //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
+    //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
+    output_stream_<<std::setw(2)<<tip.num<<' '
+        <<'('<<tip.x<<','<<tip.y<<')'<<' ';
   }
+  /*
+  output_stream_<<std::endl;
+  for(auto& tip : tips_) {
+    //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
+    //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
+    output_stream_<<std::setw(11)<<std::setprecision(4)<<tip.lapl<<' ';
+  }
+  */
+  output_stream_<<std::endl;
 }
 
 bool Analyser::CheckIfLineBurned(int line_num) {
@@ -103,7 +130,7 @@ void Analyser::SkipFieldFromInput() {
 void Analyser::ReadFieldFromInput() {
   char field_name;
   input_stream_>>field_name;
-  std::cout<<"reading field: "<<field_name<<std::endl;
+  //std::cout<<"reading field: "<<field_name<<std::endl;
   int size_x;
   int size_y;
   input_stream_>>size_x>>size_y;
@@ -134,7 +161,7 @@ void Analyser::ReadFieldFromInput() {
 bool Analyser::ReadStepLine() {
   std::string step_word;
   input_stream_>>step_word>>current_step_;
-  std::cout<<"new step no: "<<current_step_<<std::endl;
+  //std::cout<<"new step no: "<<current_step_<<std::endl;
   return input_stream_.good();
 }
 
@@ -151,7 +178,9 @@ void Analyser::UpdateFrontPosition() {
 }
 
 void Analyser::SkipToStep(int step) {
-  while(current_step_<200000 && ReadStepLine()) {
+  while(current_step_<step && ReadStepLine()) {
+    std::cout<<"skip"<<std::endl;
+    PrintStepLine(std::cout);
     SkipFieldFromInput();
     SkipFieldFromInput();
     SkipFieldFromInput();
@@ -161,8 +190,9 @@ void Analyser::SkipToStep(int step) {
   }
 }
 
-void Analyser::LoadFields() {
-  if(ReadStepLine()) {
+bool Analyser::LoadFields() {
+  bool result = ReadStepLine();
+  if(result) {
     ReadFieldFromInput();
     ReadFieldFromInput();
     ReadFieldFromInput();
@@ -170,19 +200,23 @@ void Analyser::LoadFields() {
     std::cout<<"Analyser::LoadFields : stream ended, unable to load"<<std::endl;
   }
   //UpdateFrontPosition();
-  FindTips();
-  AnalyseTips();
   //AnalyseFingers();
+  return result;
 }
 
 void Analyser::PerformAnalysis(int start_step) {
   if (start_step != 0 ) {
     SkipToStep(start_step);
   }
-  LoadFields();
-  UpdateFrontPosition();
-  FindTips();
-  AnalyseTips();
+  std::cout<<"irer"<<std::endl;
+  while(LoadFields()) {
+    //UpdateFrontPosition();
+    //FindTips();
+    FindTips();
+    AnalyseTips();
+    SortTips();
+    PrintTips();
+  }
 }
 
 void Analyser::AnalyseFingers() {
@@ -229,11 +263,25 @@ void Analyser::AnalyseTips() {
   int size_y = v_->size_y_;
   int size_x = v_->size_x_;
   for (auto& tip : tips_) {
-    std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
-              << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
-    std::cout<<CalculateTipLaplace(tip)<<std::endl;
-    std::cout<<CalculateTipFlow(tip)<<std::endl;
+    tip.lapl = CalculateTipLaplace(tip);
+    tip.flow = CalculateTipFlow(tip);
+    Tip* nearest = nullptr;
+    int min_dist = 2*size_x;
+    for (auto& old_tip : old_tips_) {
+      int dist = tip.Dist(old_tip, size_x);
+      if (dist<min_dist) {
+        nearest = &old_tip;
+        min_dist = min_dist;
+      }
+    }
+    tip.parent = nearest;
+    if (tip.parent!=nullptr) {
+      tip.num = tip.parent->num;
+    } else {
+      tip.num = ++tip_num_;
+    }
   }
+  old_tips_ = tips_;
 }
 
 double Analyser::CalculateTipLaplace(Tip& tip) {

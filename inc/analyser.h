@@ -7,10 +7,17 @@ class Tip {
  public:
   Tip(int,int);
   void Add(int,int);
+  int Dist(const Tip&, int size_x);
   int x_max;
   int x_min;
   int y_max;
   int y_min;
+  int num;
+  int x;
+  int y;
+  double lapl;
+  double flow;
+  Tip* parent;
 };
 
 class Analyser {
@@ -22,7 +29,7 @@ class Analyser {
   void PerformAnalysis(int start_step=0);
   void RewriteData();
   void SkipToStep(int);
-  void LoadFields();
+  bool LoadFields();
   void SkipFieldFromInput();
   void ReadFieldFromInput();
   void UpdateFrontPosition();
@@ -33,6 +40,7 @@ class Analyser {
   void PrintStepLine(std::ostream&);
   void PrintTips();
  private:
+  void SortTips();
   bool VPointBurned(int,int);
   void AnalyseFingers();
   void AnalyseTips();
@@ -47,8 +55,10 @@ class Analyser {
   static constexpr double burn_offset_ = 0.9;
   static constexpr double min_v_ = 0.95;
   std::vector<Tip> tips_;
+  std::vector<Tip> old_tips_;
   int current_step_;
   int front_position_;
+  int tip_num_;
 
 };
 
