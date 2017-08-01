@@ -8,7 +8,8 @@ Analyser::Analyser(
     ) : 
     input_stream_(input_stream),
     output_stream_(output_stream),
-    front_position_(10)
+    front_position_(10),
+    current_step_(0)
     {
 }
 
@@ -93,19 +94,21 @@ void Analyser::UpdateFrontPosition() {
 }
 
 void Analyser::PerformAnalysis() {
-  while(ReadStepLine()) {
-    ReadFieldFromInput();
+  while(current_step_<200000 ) {
+    ReadStepLine();
     SkipFieldFromInput();
-    ReadFieldFromInput();
-    std::string dummy;
-    std::getline(input_stream_, dummy);
-    UpdateFrontPosition();
-    std::cout<<current_step_<<" "<<front_position_<<'\n';
-    output_stream_<<current_step_<<" "<<front_position_<<std::endl;
-    
+    SkipFieldFromInput();
+    SkipFieldFromInput();
   }
+  ReadStepLine();
+  ReadFieldFromInput();
+  ReadFieldFromInput();
+  ReadFieldFromInput();
+  std::string dummy;
+  std::getline(input_stream_, dummy);
+  UpdateFrontPosition();
   AnalyseTips();
-  AnalyseFingers();
+  //AnalyseFingers();
 }
 
 void Analyser::AnalyseFingers() {
@@ -149,26 +152,26 @@ void Analyser::AnalyseFingers() {
 }
 
 void Analyser::AnalyseTips() {
-  UpdateFrontPosition();
-  int size_y = w_->size_y_;
-  int size_x = w_->size_x_;
-  int i = front_position_ - 3;
+  int size_y = v_->size_y_;
+  int size_x = v_->size_x_;
 
+  for (int i = 0; i<size_x; ++i) {
+    bool last_burned = (((*v_)(i,0)>min_v_)?true:false);
+    int tip_size = 0;
 
-  bool last_burned = (((*w_)(i,0)<burn_offset_)?true:false);
-  int tip_size = 0;
-
-  for(int j = 0; j<size_y; ++j) {
-    bool point_burned = (((*w_)(i,j)<burn_offset_)?true:false);
-    if (point_burned){
-      ++tip_size;
+    for(int j = 0; j<size_y; ++j) {
+        std::cout<<"tip "<<i<<", "<<j-tip_size/2<<std::endl;
+      bool point_burned = (((*v_)(i,j)>min_v_)?true:false);
+      if (point_burned){
+        ++tip_size;
+      }
+      if (last_burned && !point_burned) {
+        double ret  = CalculateTipFlow(i, j-tip_size/2, tip_size);
+        std::cout<<"tip "<<i<<", "<<j-tip_size/2<<" flow: "<<ret<<std::endl;
+        tip_size = 0;
+      }
+      last_burned  = point_burned;
     }
-    if (last_burned && !point_burned) {
-      double ret  = CalculateTipFlow(i, j-tip_size/2, tip_size);
-      std::cout<<"tip "<<i<<", "<<j-tip_size/2<<" flow: "<<ret<<std::endl;
-      tip_size = 0;
-    }
-    last_burned  = point_burned;
   }
 
 }

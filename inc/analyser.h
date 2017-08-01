@@ -28,6 +28,7 @@ class Analyser {
   std::unique_ptr<Field> v_;
   std::unique_ptr<Field> w_;
   static constexpr double burn_offset_ = 0.9;
+  static constexpr double min_v_ = 0.5;
   int current_step_;
   int front_position_;
 
