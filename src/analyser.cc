@@ -1,5 +1,16 @@
 #include<analyser.h>
 #include<cstring>
+#include<algorithm>
+
+Tip::Tip() : x_max(0), x_min(0), y_max(0), y_min(0) {
+}
+
+void Tip::Add(int x, int y) {
+  x_min = std::min(x_min, x);
+  x_max = std::max(x_max, x);
+  y_max = std::max(y_max, y);
+  y_min = std::min(y_min, y);
+}
 
 
 Analyser::Analyser(
@@ -11,6 +22,19 @@ Analyser::Analyser(
     front_position_(10)
     {
 }
+
+void VPointBurned(i,j) {
+  return v_(i,j)>burn_offset_;
+}
+
+void Analyser::FindTips() {
+  int size_x = w_.size_x_;
+  int size_y = w_.size_y_;
+  Field f(w_.size_x_, w_size_y);
+  f.Set(1.);
+  for(int i = 0; i<size_x; ++i) {
+    for(int j = 0; j<size_y; ++j) {
+      if(
 
 bool Analyser::CheckIfLineBurned(int line_num) {
   for(int j = 0; j<w_->size_y_; ++j) {

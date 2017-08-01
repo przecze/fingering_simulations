@@ -2,6 +2,15 @@
 #define ANALYSER_H
 #include<iostream>
 #include<physical_state.h>
+class Tip {
+ public:
+  Tip();
+  void Add(int,int);
+  int x_max;
+  int x_min;
+  int y_max;
+  int y_min;
+}
 
 class Analyser {
  public:
