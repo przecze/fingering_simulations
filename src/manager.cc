@@ -30,8 +30,8 @@ void Manager::RunSimulations() {
     simulations_.push_back(Simulation(
           500,
           500,
-          300000,
-          10000,
+          500000,
+          25000,
           *(out_streams_[i]),
           threads_per_simulation_,
           Pe_values_[i]));
