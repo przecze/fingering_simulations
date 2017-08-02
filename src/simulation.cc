@@ -98,7 +98,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
       NV(i,j) = v +
           dt*(
-              1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
+              0.3/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
               +  beta*gamma*f
               -Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
               -ha*(v-sigma)

@@ -6,7 +6,8 @@
 Tip::Tip(int i, int j) :
     x_max(i), x_min(i),
     y_max(j), y_min(j),
-    parent(nullptr) {
+    parent(nullptr),
+    has_child(false) {
 }
 
 void Tip::Add(int i, int j) {
@@ -55,7 +56,7 @@ void Analyser::FindTips() {
   tips_.clear();
   Field marked(size_x,size_y);
   marked.SetValue(1.);
-  for(int i = 0; i<size_x; ++i) {
+  for(int i = 1; i<size_x-1; ++i) {
     for(int j = 0; j<size_y; ++j) {
       if(marked(i,j) ==1 && VPointBurned(i,j)) {
         tips_.push_back(Tip(i,j));
@@ -259,6 +260,7 @@ void Analyser::AnalyseFingers() {
 void Analyser::AnalyseTips() {
   int size_y = v_->size_y_;
   int size_x = v_->size_x_;
+  double avg_lapl = 0.;
   for (auto& tip : tips_) {
     tip.lapl = CalculateTipLaplace(tip);
     tip.flow = CalculateTipFlow(tip);
@@ -275,10 +277,21 @@ void Analyser::AnalyseTips() {
     tip.parent = nearest;
     if (tip.parent!=nullptr) {
       tip.num = tip.parent->num;
+      if(tip.parent->has_child) {
+        std::cout<<"bifurcation "<<tip.parent->lapl<<std::endl;
+      } else {
+        tip.parent->has_child = true;
+        avg_lapl+=tip.parent->lapl;
+      }
+
     } else {
       tip.num = ++tip_num_;
     }
   }
+  if (old_tips_.size()!=0) {
+    avg_lapl/=old_tips_.size();
+  }
+  std::cout<<"avg_lapl of parents "<<avg_lapl<<std::endl;
   old_tips_ = tips_;
 }
 
@@ -286,7 +299,7 @@ double Analyser::CalculateTipLaplace(Tip& tip) {
   double result = 0;
   int it = (tip.x_min + tip.x_max)/2;
   int jt = (tip.y_min + tip.y_max)/2;
-  int r = (tip.x_max - tip.x_min)/2;
+  int r = r_for_lapl_calculation_;//(tip.x_max - tip.x_min)/2;
   for (int i = it - r; i < it + r; ++i) {
     for (int j = jt - r; j < jt + r; ++j) {
       if ((i-it)*(i-it)+(j-jt)*(j-jt) < r*r) {

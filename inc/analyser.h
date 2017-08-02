@@ -17,6 +17,7 @@ class Tip {
   int y;
   double lapl;
   double flow;
+  bool has_child;
   Tip* parent;
 };
 
@@ -53,7 +54,8 @@ class Analyser {
   std::unique_ptr<Field> v_;
   std::unique_ptr<Field> w_;
   static constexpr double burn_offset_ = 0.9;
-  static constexpr double min_v_ = 0.95;
+  static constexpr double min_v_ = 0.8;
+  static constexpr int r_for_lapl_calculation_ = 20;
   std::vector<Tip> tips_;
   std::vector<Tip> old_tips_;
   int current_step_;
