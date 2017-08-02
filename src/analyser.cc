@@ -56,7 +56,7 @@ void Analyser::FindTips() {
   tips_.clear();
   Field marked(size_x,size_y);
   marked.SetValue(1.);
-  for(int i = 1; i<size_x-1; ++i) {
+  for(int i = 5; i<size_x-5; ++i) {
     for(int j = 0; j<size_y; ++j) {
       if(marked(i,j) ==1 && VPointBurned(i,j)) {
         tips_.push_back(Tip(i,j));
@@ -278,7 +278,11 @@ void Analyser::AnalyseTips() {
     if (tip.parent!=nullptr) {
       tip.num = tip.parent->num;
       if(tip.parent->has_child) {
-        std::cout<<"bifurcation "<<tip.parent->lapl<<std::endl;
+        tip.num = ++tip_num_;
+        avg_lapl-=tip.parent->lapl;//it was added before
+        std::cout<<"bifurcation of "<<tip.parent->num
+                 <<" added"<<tip.num<<" lapl:"<<tip.parent->lapl
+                 <<std::endl;
       } else {
         tip.parent->has_child = true;
         avg_lapl+=tip.parent->lapl;
@@ -291,7 +295,7 @@ void Analyser::AnalyseTips() {
   if (old_tips_.size()!=0) {
     avg_lapl/=old_tips_.size();
   }
-  std::cout<<"avg_lapl of parents "<<avg_lapl<<std::endl;
+  std::cout<<"avg_lapl of non-spliting "<<avg_lapl<<std::endl;
   old_tips_ = tips_;
 }
 

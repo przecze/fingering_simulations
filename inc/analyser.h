@@ -54,8 +54,8 @@ class Analyser {
   std::unique_ptr<Field> v_;
   std::unique_ptr<Field> w_;
   static constexpr double burn_offset_ = 0.9;
-  static constexpr double min_v_ = 0.8;
-  static constexpr int r_for_lapl_calculation_ = 20;
+  static constexpr double min_v_ = 0.5;
+  static constexpr int r_for_lapl_calculation_ = 15;
   std::vector<Tip> tips_;
   std::vector<Tip> old_tips_;
   int current_step_;
