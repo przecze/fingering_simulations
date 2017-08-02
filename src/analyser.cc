@@ -84,16 +84,14 @@ void Analyser::PrintTips() {
     //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
     //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
     output_stream_<<std::setw(2)<<tip.num<<' '
-        <<'('<<tip.x<<','<<tip.y<<')'<<' ';
+        <<'('<<std::setw(3)<<tip.x<<','<<std::setw(3)<<tip.y<<')'<<' ';
   }
-  /*
   output_stream_<<std::endl;
   for(auto& tip : tips_) {
     //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
     //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
-    output_stream_<<std::setw(11)<<std::setprecision(4)<<tip.lapl<<' ';
+    output_stream_<<std::setw(12)<<std::setprecision(4)<<tip.lapl<<' ';
   }
-  */
   output_stream_<<std::endl;
 }
 
@@ -208,7 +206,6 @@ void Analyser::PerformAnalysis(int start_step) {
   if (start_step != 0 ) {
     SkipToStep(start_step);
   }
-  std::cout<<"irer"<<std::endl;
   while(LoadFields()) {
     //UpdateFrontPosition();
     //FindTips();
@@ -266,12 +263,13 @@ void Analyser::AnalyseTips() {
     tip.lapl = CalculateTipLaplace(tip);
     tip.flow = CalculateTipFlow(tip);
     Tip* nearest = nullptr;
-    int min_dist = 2*size_x;
+    int min_dist = size_x*size_x*4;
     for (auto& old_tip : old_tips_) {
       int dist = tip.Dist(old_tip, size_x);
       if (dist<min_dist) {
         nearest = &old_tip;
-        min_dist = min_dist;
+        min_dist = dist;
+        //std::cout<<"nearest found "<<nearest->num<<" dist "<<dist<<std::endl;
       }
     }
     tip.parent = nearest;

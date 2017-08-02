@@ -28,10 +28,10 @@ void Manager::RunSimulations() {
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
-          500,
-          500,
-          500000,
-          25000,
+          300,
+          200,
+          100000,
+          10000,
           *(out_streams_[i]),
           threads_per_simulation_,
           Pe_values_[i]));
@@ -57,7 +57,7 @@ void Manager::RunAnalyses() {
     analyses_results_.push_back(std::move(tmp_u_ptr));
   }
   for(int i = 0 ; i<simulations_num_; ++i) {
-    Analyser a(*(in_streams_[i]), *(analyses_results_[i]) );
+    Analyser a(*(in_streams_[i]), std::cout);
     a.PerformAnalysis();
   }
   PrintFetchedData();
