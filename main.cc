@@ -5,8 +5,8 @@
 #include<fstream>
 
 void Sim() {
-  auto manager = Manager({0.1, 0.3, 0.5});
-  manager.threads_per_simulation_ = 12;
+  auto manager = Manager({.3});
+  manager.threads_per_simulation_ = 4;
   manager.Run();
 }
 
@@ -21,6 +21,5 @@ void An() {
 
 int main(int argc, char** argv){
   Sim();
-  An();
   return 0;
 }
