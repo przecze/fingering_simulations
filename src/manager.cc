@@ -28,10 +28,10 @@ void Manager::RunSimulations() {
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
-          500,
-          800,
-          800000,
-          20000,
+          300,
+          200,
+          40000,
+          5000,
           *(out_streams_[i]),
           threads_per_simulation_,
           Pe_values_[i]));
