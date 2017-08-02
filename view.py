@@ -22,6 +22,7 @@ while(file_in):
     plt.clf()
     try:
         step_no = file_in.readline()
+        plt.suptitle("Step "+step_no)
         for field in range(3):
             name = file_in.readline()
             try:

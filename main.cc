@@ -13,7 +13,7 @@ void Sim() {
 }
 
 void An() {
-  std::string filename = "out/sim002";
+  std::string filename = "runs/run010/sim001";
   std::cout<<"open: "<<filename<<std::endl;
   std::ifstream stream(filename);
   auto analyser = Analyser(stream, std::cout);
@@ -22,7 +22,8 @@ void An() {
 
 
 int main(int argc, char** argv){
-  std::srand(time(nullptr));
-  Sim();
+  //std::srand(time(nullptr));
+  //Sim();
+  An();
   return 0;
 }
