@@ -15,8 +15,6 @@ Manager::Manager(std::vector<double> Pe_values) :
     simulations_num_(Pe_values.size()),
     threads_per_simulation_(4) {
   std::cout<<"manager created"<<std::endl;
-  GenerateFileNames();
-  PrintPeValues();
 }
 
 void Manager::Run() {
@@ -25,13 +23,15 @@ void Manager::Run() {
 }
 
 void Manager::RunSimulations() {
+  GenerateFileNames();
+  PrintPeValues();
   OpenFilesForOut();
   for(int i =  0; i< simulations_num_; ++i) {
     simulations_.push_back(Simulation(
           800,
           800,
-          120000,
-          5000,
+          1200000,
+          50000,
           *(out_streams_[i]),
           threads_per_simulation_,
           Pe_values_[i]));
