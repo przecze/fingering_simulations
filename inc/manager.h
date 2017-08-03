@@ -14,6 +14,7 @@ class Manager {
   void RunSimulations();
   void RunAnalyses();
   int threads_per_simulation_;
+  std::string out_dir_ = "out/";
  private:
   std::vector<std::string> file_names_;
   std::vector<Simulation> simulations_;

@@ -7,8 +7,9 @@
 #include<cstdlib>
 
 void Sim() {
-  auto manager = Manager({.3});
-  manager.threads_per_simulation_ = 4;
+  auto manager = Manager({.005, 0.01, 0.05, 0.1, 0.2, 0.5});
+  manager.out_dir_ = "runs/run011/";
+  manager.threads_per_simulation_ = 8;
   manager.Run();
 }
 
@@ -22,8 +23,8 @@ void An() {
 
 
 int main(int argc, char** argv){
-  //std::srand(time(nullptr));
-  //Sim();
-  An();
+  std::srand(time(nullptr));
+  Sim();
+  //An();
   return 0;
 }
