@@ -2,13 +2,12 @@
 #include<cstring>
 #include<iomanip>
 #include<algorithm>
+#include<cmath>
 
 Tip::Tip(int i, int j) :
-    x_max(i), x_min(i),
-    y_max(j), y_min(j),
-    parent(nullptr),
-    has_child(false),
-    bifurcated(false) {
+    x_max(i), x(i), x_min(i),
+    y_max(j), y(j), y_min(j)
+    {
 }
 
 void Tip::Add(int i, int j) {
@@ -25,6 +24,41 @@ int Tip::Dist(const Tip& tip, int size_x) {
   int x_dist = std::max(tip.x-x, x-tip.x);
   x_dist = std::min(x_dist, size_x - x_dist);
   return (tip.y-y)*(tip.y-y) + x_dist*x_dist;
+}
+
+void PrintLaplInfoFormat(std::ostream& output_stream_) {
+  output_stream_<<"tips in format: (tip_no,pos_y, lapl, laplx, laply)"<<'\n';
+}
+
+void Tip::PrintLaplInfo(std::ostream& output_stream_) {
+    output_stream_<<'('<<std::setw(2)<<num<<','
+                  <<std::setw(3)<<y<<", "
+                  <<std::setprecision(2)<<lapl<<", "
+                  <<std::setprecision(2)<<lapl_x<<", "
+                  <<std::setprecision(2)<<lapl_y<<") ";
+}
+
+void PrintFlowInfoFormat(std::ostream& output_stream_) {
+  output_stream_<<"tips in format: (tip_no,pos_y, flow_ang, flow)"<<'\n';
+}
+
+void Tip::PrintFlowInfo(std::ostream& output_stream_) {
+    output_stream_<<'('<<std::setw(2)<<num<<','
+                  <<std::setw(3)<<y<<", "
+                  <<std::setprecision(2)<<flow_ang<<", "
+                  <<std::setprecision(2)<<flow<<") ";
+}
+
+void PrintVelInfoFormat(std::ostream& output_stream_) {
+  output_stream_<<"tips in format: (tip_no,pos_y, vel, velx, vely)"<<'\n';
+}
+
+void Tip::PrintVelInfo(std::ostream& output_stream_) {
+    output_stream_<<'('<<std::setw(2)<<num<<','
+                  <<std::setw(3)<<y<<", "
+                  <<std::setw(3)<<vel<<", "
+                  <<std::setw(2)<<vel_x<<", "
+                  <<std::setw(2)<<vel_y<<") ";
 }
 
 
@@ -54,10 +88,22 @@ void Analyser::SortTips() {
 void Analyser::FindTips() {
   int size_x = w_->size_x_;
   int size_y = w_->size_y_;
+  int x_to_start;
+  if (old_tips_.size() != 0) {
+    auto min_x_tip = std::min_element(std::begin(old_tips_),
+                                      std::end(old_tips_),
+                                      [](const Tip& a, const Tip& b) {
+                                      return a.x < b.x;
+                                      });
+    x_to_start = min_x_tip->x;
+  } else {
+    x_to_start = 5;
+  }
+
   tips_.clear();
   Field marked(size_x,size_y);
   marked.SetValue(1.);
-  for(int i = 5; i<size_x-5; ++i) {
+  for(int i = x_to_start; i<std::min(front_position_, size_x-5); ++i) {
     for(int j = 0; j<size_y; ++j) {
       if(marked(i,j) ==1 && VPointBurned(i,j)) {
         tips_.push_back(Tip(i,j));
@@ -82,13 +128,9 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 }
 
 void Analyser::PrintTips() {
-  output_stream_<<"tips in format: (tip_no,pos_y, lapl)"<<'\n';
+  PrintVelInfoFormat(output_stream_);
   for(auto& tip : tips_) {
-    //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
-    //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
-    output_stream_<<'('<<std::setw(2)<<tip.num<<','
-                  <<std::setw(3)<<tip.y<<", "
-                  <<std::setprecision(4)<<tip.lapl<<") ";
+    tip.PrintVelInfo(output_stream_);
   }
   output_stream_<<'\n'<<std::endl;
 }
@@ -170,13 +212,13 @@ void Analyser::UpdateFrontPosition() {
     AnalyseFingers();
   }
   front_position_ = next_front_position;
-  std::cout<<"new front pos: " <<front_position_<<std::endl;
+  //std::cout<<"new front pos: " <<front_position_<<std::endl;
 }
 
 void Analyser::SkipToStep(int step) {
   while(current_step_<step && ReadStepLine()) {
-    std::cout<<"skip"<<std::endl;
-    PrintStepLine(std::cout);
+    //std::cout<<"skip"<<std::endl;
+    //PrintStepLine(std::cout);
     SkipFieldFromInput();
     SkipFieldFromInput();
     SkipFieldFromInput();
@@ -205,13 +247,17 @@ void Analyser::PerformAnalysis(int start_step, int end_step) {
     SkipToStep(start_step);
   }
   while(current_step_ < end_step && LoadFields()) {
-    //UpdateFrontPosition();
-    //FindTips();
-    PrintStepLine(output_stream_);
+    UpdateFrontPosition();
+    //PrintStepLine(output_stream_);
     FindTips();
     AnalyseTips();
+    //PrintAvgLapl();
+    //PrintMinValue();
+    RawPrint();
+    output_stream_<<std::flush;
+    old_tips_ = tips_;
     SortTips();
-    PrintTips();
+    //PrintTips();
   }
 }
 
@@ -258,11 +304,9 @@ void Analyser::AnalyseFingers() {
 void Analyser::AnalyseTips() {
   int size_y = v_->size_y_;
   int size_x = v_->size_x_;
-  double avg_lapl = 0.;
   bool bifurcation_occured = false;
   for (auto& tip : tips_) {
-    tip.lapl = CalculateTipLaplace(tip);
-    tip.flow = CalculateTipFlow(tip);
+    CalculateValuesForTip(tip);
     Tip* nearest = nullptr;
     int min_dist = size_x*size_x*4;
     for (auto& old_tip : old_tips_) {
@@ -276,70 +320,88 @@ void Analyser::AnalyseTips() {
     tip.parent = nearest;
     if (tip.parent!=nullptr) {
       tip.num = tip.parent->num;
+      tip.vel_x = tip.x - tip.parent->x;
+      tip.vel_y = tip.y - tip.parent->y;
+      tip.vel = tip.vel_x*tip.vel_x+tip.vel_y*tip.vel_y;
       if(tip.parent->has_child) {
         bifurcation_occured = true;
         tip.parent->bifurcated=true;
         tip.num = ++tip_num_;
-        avg_lapl-=tip.parent->lapl;//it was added before
-        output_stream_<<"bifurcation of "<<tip.parent->num
-                      <<" while lapl="<<std::setprecision(4)<<tip.parent->lapl
-                      <<" (added "<<tip.num<<")"
-                      <<'\n';
+        //output_stream_<<"bifurcation of "<<tip.parent->num
+        //              <<" while vel="<<std::setw(3)<<tip.parent->vel
+        //              <<" (added "<<tip.num<<")"
+        //              <<'\n'<<std::flush;
       } else {
         tip.parent->has_child = true;
-        avg_lapl+=tip.parent->lapl;
       }
+      //auto angle = std::atan2((tip.y-tip.parent->y) , (tip.x - tip.parent->x));
+      //output_stream_<<"Tip "<<tip.num<<" grow_ang: "<<angle<<std::flush;
+      //auto angle2 = tip.parent->vel_ang;
+      //output_stream_<<" vs "<<angle2<<'\n';
 
     } else {
+      output_stream_<<"Tip without parent found at "<<tip.x<<" "<<tip.y<<'\n';
       tip.num = ++tip_num_;
+    }
+  }
+}
+
+void Analyser::PrintAvgLapl() {
+  double avg_lapl = 0;
+  for(auto& tip : old_tips_) {
+    if (!tip.bifurcated) {
+      avg_lapl += tip.vel;
     }
   }
   if (old_tips_.size()!=0) {
     avg_lapl/=old_tips_.size();
   }
-  output_stream_<<"avg_lapl of non-spliting tips: "<<avg_lapl<<'\n';
+  output_stream_<<"avg_vel of non-spliting tips: "<<avg_lapl<<'\n';
+}
+
+void Analyser::PrintMaxLapl() {
   double max_lapl = -1000;
   for(auto& tip : old_tips_) {
     if (!tip.bifurcated) {
-      max_lapl = std::max(max_lapl, tip.lapl);
+      max_lapl = std::max(max_lapl, tip.vel);
     }
   }
-  output_stream_<<"max_lapl of non-spliting tips: "<<max_lapl<<'\n';
-  old_tips_ = tips_;
+  output_stream_<<"max_vel of non-spliting tips: "<<max_lapl<<'\n';
 }
 
-double Analyser::CalculateTipLaplace(Tip& tip) {
-  double result = 0;
-  int it = (tip.x_min + tip.x_max)/2;
-  int jt = (tip.y_min + tip.y_max)/2;
-  int r = r_for_lapl_calculation_;//(tip.x_max - tip.x_min)/2;
-  for (int i = it - r; i < it + r; ++i) {
-    for (int j = jt - r; j < jt + r; ++j) {
-      if ((i-it)*(i-it)+(j-jt)*(j-jt) < r*r) {
-        result -= 4*(*u_)(i,j) - (*u_)(i - 1,j) - (*u_)(i + 1,j) - (*u_)(i,j-1) - (*u_)(i,j+1);
-      }
+void Analyser::PrintMinValue() {
+  double min_value = 10000;
+  for(auto& tip : old_tips_) {
+    if (!tip.bifurcated) {
+      min_value = std::min(min_value, tip.vel);
     }
   }
-  return result;
+  output_stream_<<"min_vel of non-spliting tips: "<<min_value<<'\n';
 }
 
-double Analyser::CalculateTipFlow(Tip& tip) {
-  double resultx = 0;
-  double resulty = 0;
+void Analyser::CalculateValuesForTip(Tip& tip) {
+  tip.flow_x = 0;
+  tip.flow_y = 0;
   int it = (tip.x_min + tip.x_max)/2;
   int jt = (tip.y_min + tip.y_max)/2;
-  int r = (tip.x_max - tip.x_min)/2;
+  int r = r_for_lapl_calculation_;
+  int r2 = r*r;
   Field& U = *u_;
   for (int i = it - r; i < it + r; ++i) {
     for (int j = jt - r; j < jt + r; ++j) {
-      if ((i-it)*(i-it)+(j-jt)*(j-jt) < r*r) {
+      if ((i-it)*(i-it)+(j-jt)*(j-jt) < r2) {
         double weight = U(it,jt) - U(i,j);
-        resultx += weight * (i-it);
-        resulty += weight * (j-jt);
+        tip.flow_x += weight * (it-i);
+        tip.flow_y += weight * (jt-j);
+        tip.lapl_x += U(i - 1,j) + U(i + 1,j) - 2*U(i,j);
+        tip.lapl_y += U(i,j-1) + U(i,j+1) - 2*U(i,j);
       }
     }
   }
-  return resultx/resulty;
+  tip.lapl = tip.lapl_x+tip.lapl_y;
+  tip.lapl_ratio = tip.lapl_x/tip.lapl_y;
+  tip.flow_ang = atan2(tip.flow_y, tip.flow_x);
+  tip.flow = tip.flow_y*tip.flow_y + tip.flow_x*tip.flow_x;
 }
 
 void Analyser::PrintStepLine(std::ostream& os) {
@@ -350,4 +412,20 @@ void Analyser::PrintAnalysedField(std::ostream& os) {
   u_->Print(os);
   v_->Print(os);
   w_->Print(os);
+}
+
+void Analyser::RawPrint() {
+  for(auto& tip : tips_) {
+    Tip* parent = (tip.parent?tip.parent:(new Tip(0,0)));
+    output_stream_<<tip.vel
+                  <<' '<<parent->flow
+                  <<' '<<parent->flow_ang
+                  <<' '<<parent->flow_x
+                  <<' '<<parent->flow_y
+                  <<' '<<parent->lapl
+                  <<' '<<parent->lapl_ratio
+                  <<' '<<parent->lapl_x
+                  <<' '<<parent->lapl_y
+                  <<'\n';
+  }
 }

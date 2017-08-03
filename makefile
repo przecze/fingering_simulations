@@ -17,7 +17,7 @@ exec : obj/main.o obj/physical_state.o obj/simulation.o obj/analyser.o obj/manag
 obj/main.o : main.cc
 	g++ -c $(FLAGS) -o obj/main.o main.cc
 
-obj/physical_state.o : src/physical_state.cc
+obj/physical_state.o : src/physical_state.cc inc/physical_state.h
 	g++ -c $(FLAGS) -o $@ $^
 
 obj/simulation.o : src/simulation.cc inc/simulation.h
