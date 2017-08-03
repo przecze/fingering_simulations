@@ -14,17 +14,20 @@ void Sim() {
 }
 
 void An() {
-  std::string filename = "runs/run010/sim001";
+  std::string filename = "runs/run005/sim001.out";
   std::cout<<"open: "<<filename<<std::endl;
   std::ifstream stream(filename);
-  auto analyser = Analyser(stream, std::cout);
-  analyser.PerformAnalysis(20000);
+  std::string out_filename = "lapl_analysis_r005_s001";
+  std::cout<<"open: "<<out_filename<<std::endl;
+  std::ofstream out_stream(out_filename);
+  auto analyser = Analyser(stream, out_stream);
+  analyser.PerformAnalysis(20000, 150000);
 }
 
 
 int main(int argc, char** argv){
   std::srand(time(nullptr));
-  Sim();
-  //An();
+  //Sim();
+  An();
   return 0;
 }

@@ -7,7 +7,8 @@ Tip::Tip(int i, int j) :
     x_max(i), x_min(i),
     y_max(j), y_min(j),
     parent(nullptr),
-    has_child(false) {
+    has_child(false),
+    bifurcated(false) {
 }
 
 void Tip::Add(int i, int j) {
@@ -81,19 +82,15 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 }
 
 void Analyser::PrintTips() {
+  output_stream_<<"tips in format: (tip_no,pos_y, lapl)"<<'\n';
   for(auto& tip : tips_) {
     //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
     //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
-    output_stream_<<std::setw(2)<<tip.num<<' '
-        <<'('<<std::setw(3)<<tip.x<<','<<std::setw(3)<<tip.y<<')'<<' ';
+    output_stream_<<'('<<std::setw(2)<<tip.num<<','
+                  <<std::setw(3)<<tip.y<<", "
+                  <<std::setprecision(4)<<tip.lapl<<") ";
   }
-  output_stream_<<std::endl;
-  for(auto& tip : tips_) {
-    //std::cout<< "Tip: " <<tip.x_min << " to " <<tip.x_max 
-    //          << ", " <<tip.y_min << " to " <<tip.y_max<<std::endl;
-    output_stream_<<std::setw(12)<<std::setprecision(4)<<tip.lapl<<' ';
-  }
-  output_stream_<<std::endl;
+  output_stream_<<'\n'<<std::endl;
 }
 
 bool Analyser::CheckIfLineBurned(int line_num) {
@@ -203,13 +200,14 @@ bool Analyser::LoadFields() {
   return result;
 }
 
-void Analyser::PerformAnalysis(int start_step) {
-  if (start_step != 0 ) {
+void Analyser::PerformAnalysis(int start_step, int end_step) {
+  if (start_step != 0 ) { 
     SkipToStep(start_step);
   }
-  while(LoadFields()) {
+  while(current_step_ < end_step && LoadFields()) {
     //UpdateFrontPosition();
     //FindTips();
+    PrintStepLine(output_stream_);
     FindTips();
     AnalyseTips();
     SortTips();
@@ -261,6 +259,7 @@ void Analyser::AnalyseTips() {
   int size_y = v_->size_y_;
   int size_x = v_->size_x_;
   double avg_lapl = 0.;
+  bool bifurcation_occured = false;
   for (auto& tip : tips_) {
     tip.lapl = CalculateTipLaplace(tip);
     tip.flow = CalculateTipFlow(tip);
@@ -278,11 +277,14 @@ void Analyser::AnalyseTips() {
     if (tip.parent!=nullptr) {
       tip.num = tip.parent->num;
       if(tip.parent->has_child) {
+        bifurcation_occured = true;
+        tip.parent->bifurcated=true;
         tip.num = ++tip_num_;
         avg_lapl-=tip.parent->lapl;//it was added before
-        std::cout<<"bifurcation of "<<tip.parent->num
-                 <<" added"<<tip.num<<" lapl:"<<tip.parent->lapl
-                 <<std::endl;
+        output_stream_<<"bifurcation of "<<tip.parent->num
+                      <<" while lapl="<<std::setprecision(4)<<tip.parent->lapl
+                      <<" (added "<<tip.num<<")"
+                      <<'\n';
       } else {
         tip.parent->has_child = true;
         avg_lapl+=tip.parent->lapl;
@@ -295,7 +297,14 @@ void Analyser::AnalyseTips() {
   if (old_tips_.size()!=0) {
     avg_lapl/=old_tips_.size();
   }
-  std::cout<<"avg_lapl of non-spliting "<<avg_lapl<<std::endl;
+  output_stream_<<"avg_lapl of non-spliting tips: "<<avg_lapl<<'\n';
+  double max_lapl = -1000;
+  for(auto& tip : old_tips_) {
+    if (!tip.bifurcated) {
+      max_lapl = std::max(max_lapl, tip.lapl);
+    }
+  }
+  output_stream_<<"max_lapl of non-spliting tips: "<<max_lapl<<'\n';
   old_tips_ = tips_;
 }
 

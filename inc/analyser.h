@@ -18,6 +18,7 @@ class Tip {
   double lapl;
   double flow;
   bool has_child;
+  bool bifurcated;
   Tip* parent;
 };
 
@@ -27,7 +28,7 @@ class Analyser {
       std::istream& input_stream,
       std::ostream& output_stream
       );
-  void PerformAnalysis(int start_step=0);
+  void PerformAnalysis(int start_step=0, int end_step=1e9);
   void RewriteData();
   void SkipToStep(int);
   bool LoadFields();
