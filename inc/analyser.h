@@ -36,6 +36,7 @@ class Tip {
   double vel_x=0;
   double vel_y=0;
   double vel=0;
+  double fuel = 0;
   bool has_child=false;
   bool bifurcated=false;
   Tip* parent=nullptr;

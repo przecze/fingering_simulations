@@ -257,7 +257,7 @@ void Analyser::PerformAnalysis(int start_step, int end_step) {
     output_stream_<<std::flush;
     old_tips_ = tips_;
     SortTips();
-    //PrintTips();
+    PrintTips();
   }
 }
 
@@ -402,6 +402,7 @@ void Analyser::CalculateValuesForTip(Tip& tip) {
   tip.lapl_ratio = tip.lapl_x/tip.lapl_y;
   tip.flow_ang = atan2(tip.flow_y, tip.flow_x);
   tip.flow = tip.flow_y*tip.flow_y + tip.flow_x*tip.flow_x;
+  tip.fuel = (*w_)(tip.x, tip.y);
 }
 
 void Analyser::PrintStepLine(std::ostream& os) {
@@ -415,17 +416,21 @@ void Analyser::PrintAnalysedField(std::ostream& os) {
 }
 
 void Analyser::RawPrint() {
+//  for(auto& tip : tips_) {
+//    tip* parent = (tip.parent?tip.parent:(new tip(0,0)));
+//    output_stream_<<tip.vel
+//                  <<' '<<parent->flow
+//                  <<' '<<parent->flow_ang
+//                  <<' '<<parent->flow_x
+//                  <<' '<<parent->flow_y
+//                  <<' '<<parent->lapl
+//                  <<' '<<parent->lapl_ratio
+//                  <<' '<<parent->lapl_x
+//                  <<' '<<parent->lapl_y
+//                  <<'\n';
+//  }
   for(auto& tip : tips_) {
-    Tip* parent = (tip.parent?tip.parent:(new Tip(0,0)));
-    output_stream_<<tip.vel
-                  <<' '<<parent->flow
-                  <<' '<<parent->flow_ang
-                  <<' '<<parent->flow_x
-                  <<' '<<parent->flow_y
-                  <<' '<<parent->lapl
-                  <<' '<<parent->lapl_ratio
-                  <<' '<<parent->lapl_x
-                  <<' '<<parent->lapl_y
-                  <<'\n';
+    output_stream_<<current_step_<<' '<<tip.lapl<<'\n';
   }
+  output_stream_<<std::flush;
 }
