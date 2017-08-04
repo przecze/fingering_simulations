@@ -15,12 +15,12 @@ void Sim() {
 
 void An() {
   std::string filename = "runs/run005/sim001.out";
-  std::cout<<"open: "<<filename<<std::endl;
+  std::cout<<"open: "<<filename<<" for input"<<std::endl;
   std::ifstream stream(filename);
-  //std::string out_filename = "lapl_analysis_r005_s001";
-  //std::cout<<"open: "<<out_filename<<std::endl;
-  //std::ofstream out_stream(out_filename);
-  auto analyser = Analyser(stream, std::cout);
+  std::string out_filename = "analyser_out";
+  std::cout<<"open: "<<out_filename<<std::endl;
+  std::ofstream out_stream(out_filename);
+  auto analyser = Analyser(stream, out_stream);
   analyser.PerformAnalysis(20000, 150000);
 }
 

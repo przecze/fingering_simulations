@@ -16,7 +16,7 @@
 class Tip {
  public:
   Tip(int,int);
-  void Add(int,int);
+  void Add(int,int,int);
   int Dist(const Tip&, int size_x);
   int x_max;
   int x_min;
@@ -39,10 +39,12 @@ class Tip {
   double fuel = 0;
   bool has_child=false;
   bool bifurcated=false;
+  int child_num=-1;
   Tip* parent=nullptr;
   void PrintFlowInfo(std::ostream& output_stream_);
   void PrintLaplInfo(std::ostream& output_stream_);
   void PrintVelInfo(std::ostream& output_stream_);
+  void CustomPrint(std::ostream& output_stream_);
 
 };
 

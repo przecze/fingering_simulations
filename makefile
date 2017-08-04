@@ -18,7 +18,7 @@ obj/main.o : main.cc
 	g++ -c $(FLAGS) -o obj/main.o main.cc
 
 obj/physical_state.o : src/physical_state.cc inc/physical_state.h
-	g++ -c $(FLAGS) -o $@ $^
+	g++ -c $(FLAGS) -o $@ src/physical_state.cc
 
 obj/simulation.o : src/simulation.cc inc/simulation.h
 	g++ -c $(FLAGS) -o $@ src/simulation.cc

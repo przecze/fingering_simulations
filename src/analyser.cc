@@ -10,20 +10,19 @@ Tip::Tip(int i, int j) :
     {
 }
 
-void Tip::Add(int i, int j) {
+void Tip::Add(int i, int j, int size_y) {
   x_min = std::min(x_min, i);
   x_max = std::max(x_max, i);
   y_max = std::max(y_max, j);
   y_min = std::min(y_min, j);
   x = (x_min + x_max)/2;
   y = (y_min + y_max)/2;
-  
 }
 
-int Tip::Dist(const Tip& tip, int size_x) {
-  int x_dist = std::max(tip.x-x, x-tip.x);
-  x_dist = std::min(x_dist, size_x - x_dist);
-  return (tip.y-y)*(tip.y-y) + x_dist*x_dist;
+int Tip::Dist(const Tip& tip, int size_y) {
+  int y_dist = std::abs(tip.y-y);
+  y_dist = std::min(y_dist, size_y - y_dist);
+  return (tip.x-x)*(tip.x-x) + y_dist*y_dist;
 }
 
 void PrintLaplInfoFormat(std::ostream& output_stream_) {
@@ -59,6 +58,14 @@ void Tip::PrintVelInfo(std::ostream& output_stream_) {
                   <<std::setw(3)<<vel<<", "
                   <<std::setw(2)<<vel_x<<", "
                   <<std::setw(2)<<vel_y<<") ";
+}
+
+void Tip::CustomPrint(std::ostream& o) {
+  o<<num<<' '
+   <<lapl<<' '
+   <<vel<<' '
+   <<(parent?parent->num:-1)<<' '
+   ;
 }
 
 
@@ -115,7 +122,7 @@ void Analyser::FindTips() {
 
 void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
   marked(i, j) = 0;
-  tip.Add(i,j);
+  tip.Add(i,j, v_->size_x_);
   int ni;
   int nj;
   for (int magic = 0; magic < 4; ++magic) {
@@ -128,11 +135,12 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 }
 
 void Analyser::PrintTips() {
-  PrintVelInfoFormat(output_stream_);
   for(auto& tip : tips_) {
-    tip.PrintVelInfo(output_stream_);
+    output_stream_<<current_step_<<' ';
+    tip.CustomPrint(output_stream_);
+    output_stream_<<'\n';
   }
-  output_stream_<<'\n'<<std::endl;
+  output_stream_<<std::flush;
 }
 
 bool Analyser::CheckIfLineBurned(int line_num) {
@@ -253,11 +261,11 @@ void Analyser::PerformAnalysis(int start_step, int end_step) {
     AnalyseTips();
     //PrintAvgLapl();
     //PrintMinValue();
-    RawPrint();
+    //RawPrint();
     output_stream_<<std::flush;
-    old_tips_ = tips_;
-    SortTips();
     PrintTips();
+    SortTips();
+    old_tips_ = tips_;
   }
 }
 
@@ -322,11 +330,16 @@ void Analyser::AnalyseTips() {
       tip.num = tip.parent->num;
       tip.vel_x = tip.x - tip.parent->x;
       tip.vel_y = tip.y - tip.parent->y;
-      tip.vel = tip.vel_x*tip.vel_x+tip.vel_y*tip.vel_y;
+      tip.vel = min_dist;
+      if(min_dist > 1000) {
+        std::cout<<"dist!!!"<<std::endl;
+        std::cout<<tip.x<<" "<<tip.y<<" "<<tip.parent->x<<" "<<tip.parent->y<<std::endl;
+    }
       if(tip.parent->has_child) {
         bifurcation_occured = true;
         tip.parent->bifurcated=true;
         tip.num = ++tip_num_;
+        tip.parent->child_num = tip.num;
         //output_stream_<<"bifurcation of "<<tip.parent->num
         //              <<" while vel="<<std::setw(3)<<tip.parent->vel
         //              <<" (added "<<tip.num<<")"
@@ -340,7 +353,7 @@ void Analyser::AnalyseTips() {
       //output_stream_<<" vs "<<angle2<<'\n';
 
     } else {
-      output_stream_<<"Tip without parent found at "<<tip.x<<" "<<tip.y<<'\n';
+      //output_stream_<<"Tip without parent found at "<<tip.x<<" "<<tip.y<<'\n';
       tip.num = ++tip_num_;
     }
   }
