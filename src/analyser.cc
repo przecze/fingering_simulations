@@ -135,6 +135,7 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 }
 
 void Analyser::PrintTips() {
+  output_stream_<<tips_.size()<<std::endl;
   for(auto& tip : tips_) {
     output_stream_<<current_step_<<' ';
     tip.CustomPrint(output_stream_);
@@ -266,6 +267,19 @@ void Analyser::PerformAnalysis(int start_step, int end_step) {
     PrintTips();
     SortTips();
     old_tips_ = tips_;
+  }
+}
+
+void Analyser::Step() {
+  if (LoadFields()) {
+    UpdateFrontPosition();
+    FindTips();
+    AnalyseTips();
+    PrintTips();
+    SortTips();
+    old_tips_ = tips_;
+  } else {
+    std::cout<<"Analyser: cant perform analysis step. Not enaugh data in stream"<<std::endl;
   }
 }
 

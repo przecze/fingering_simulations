@@ -39,17 +39,29 @@ void Simulation::Run() {
   InitValues();
   for (int step_no = 0; step_no<steps_total_; ++step_no) {
     if (big_step_!=-1 && !(step_no%big_step_)) {
-      out_stream_<<"step "<<step_no<<'\n';
-      physical_state_->Print(out_stream_);
+      PrintData(out_stream_);
       std::cout<<"Step "<<step_no<<" / "<<steps_total_<<std::endl;
       TimeStamp();
     }
     Step();
   }
   TimeStamp();
+  PrintData(out_stream_);
+}
+
+void Simulation::PrintData(std::ostream& os) {
+  os<<"step "<<steps_total_<<'\n';
+  physical_state_->Print(os);
+}
+
+void Simulation::Steps(int steps) {
+  while (steps --) {
+    Step();
+    ++current_step_;
+  }
+  TimeStamp();
   out_stream_<<"step "<<steps_total_<<'\n';
   physical_state_->Print(out_stream_);
-  
 }
 
 int Simulation::Step() {
@@ -87,7 +99,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
       const double u = U(i,j);
       const double v = V(i,j);
       const double w = W(i,j);
-      const double f = (w>0.6?1:0)*(v>vp?1:0)*u*theta*exp(theta-theta/v);
+      const double f = (v>vp?1:0)*u*theta*exp(theta-theta/v);
 
       NU(i,j) = u + 
           dt*(

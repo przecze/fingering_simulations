@@ -16,7 +16,11 @@ class Simulation {
       double Pe = 0.3
       );
   void Run();
+  void Steps(int);
+  void InitValues();
+  void PrintData(std::ostream&);
   int Step();
+  int current_step_ = 0;
  private: 
   std::ostream& out_stream_;
   std::unique_ptr<PhysicalState> physical_state_;
@@ -29,7 +33,6 @@ class Simulation {
   int last_time_stamp_;
   std::vector<int> ranges_for_threads_;
   void PartialStepCalculation(int x_begin, int x_end);
-  void InitValues();
   void ApplyBoundaryConditions();
   void SwapOldAndNewState();
   void TimeStamp();

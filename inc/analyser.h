@@ -72,6 +72,7 @@ class Analyser {
   void PrintStepLine(std::ostream&);
   void PrintTips();
   void RawPrint();
+  void Step();
  private:
   void SortTips();
   bool VPointBurned(int,int);
