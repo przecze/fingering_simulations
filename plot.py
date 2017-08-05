@@ -30,43 +30,50 @@ while(file_in):
         except:
             print "eof"
             raise ValueError("eof")
-        print tip_data_string
-        step, tip_num, lapl_val, vel, parent = map(float, tip_data_string.split())
-        if (int(vel)>1000):
-            print "adj vel", vel
-            vel  = 0
+        #print tip_data_string
+        tip_data = map(float, tip_data_string.split())
+        try:
+            step = tip_data.pop(0)
+            tip_num = tip_data.pop(0)
+            parent = tip_data.pop(0)
+        except:
+            print "eof"
+            raise ValueError("eof")
+        print tip_data
+       
+        #if (10001>1000):#TODO adjust velocity here
+        #    print "adj vel", vel
+        #    vel  = 0
         try:
             i = tip_nums.index(tip_num)
         except:
             tip_nums.append(tip_num)
             i = tip_nums.index(tip_num)
             data.append([])
-            data2.append([])
-        data[i].append([step, np.sqrt(int(vel))])
-        data2[i].append([step, lapl_val])
+        data[i].append([step, tip_data])
         if (parent != tip_num and int(parent)!=-1):
             j = tip_nums.index(parent)
-            bifs.append( [ data[i][-1], data[j][-2] ] )
-            bifs2.append( [ data2[i][-1], data2[j][-2] ] )
-        #print tip_nums
+            previous_step = data[j][-1][0]
+            bifs.append( [step, previous_step, i, j] )
     except ValueError as err:
         print 'done', err.message
-        ax = plt.subplot("111")
-        for d in data:
-            n = np.array(d)
-            ax.plot(n[:,0], n[:,1])
-        for b in bifs:
-            bn = np.array(b)
-            ax.scatter(bn[:,0], bn[:,1])
-            ax.plot(bn[:,0], bn[:,1], color='brown', linewidth=3)
-        #ax = plt.subplot("212")
-        #for d in data2:
-        #    n = np.array(d)
-        #    ax.plot(n[:,0], n[:,1])
-        #for b in bifs2:
-        #    bn = np.array(b)
-        #    ax.scatter(bn[:,0], bn[:,1])
-        #    ax.plot(bn[:,0], bn[:,1], color='brown', linewidth=3)
-            
+        data_indexes = [2, 4]
+        for data_index in data_indexes:
+            ax = plt.subplot(str(len(data_indexes))+"1"+str(data_indexes.index(data_index)))
+            for tip in data:
+                steps = [entry[0] for entry in tip] 
+                n = np.array([entry[1] for entry in tip])
+                ax.plot(steps, n[:,data_index])
+            for b in bifs:
+                step, previous_step, i, j = b
+                steps = [entry[0] for entry in data[i]] 
+                steps2 = [entry[0] for entry in data[j]]
+                step_index = steps.index(step)
+                previous_step_index = steps2.index(previous_step)
+                xs = [previous_step, step]
+                ys = [data[j][previous_step_index][1][data_index],\
+                      data[i][step_index][1][data_index] ]
+                ax.scatter(xs, ys)
+                ax.plot(xs, ys, color='brown', linewidth=3)
         plt.show()
         break

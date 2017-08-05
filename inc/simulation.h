@@ -33,7 +33,7 @@ class Simulation {
   int last_time_stamp_;
   std::vector<int> ranges_for_threads_;
   void PartialStepCalculation(int x_begin, int x_end);
-  void ApplyBoundaryConditions();
+  virtual void ApplyBoundaryConditions();
   void SwapOldAndNewState();
   void TimeStamp();
   const double Pe;

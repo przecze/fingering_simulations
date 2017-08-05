@@ -10,6 +10,9 @@ class SingleFingerSimulation : public Simulation {
  public:
   using Simulation::Simulation;
   void InitValues();
+  void Ignite();
+  void ApplyBoundaryConditions();
+  bool ignited_=false;
 };
 
 
@@ -30,9 +33,9 @@ class SingleManager {
   void Step();
   int current_step_ = 0;
   int max_step_ = 100000000;
-  int save_steps_ = 5000;
+  int save_steps_ = 10000;
   int change_step_ = 20000;
-  int after_change_step_ = 1000;
+  int after_change_step_ = 500;
 };
 
 #endif

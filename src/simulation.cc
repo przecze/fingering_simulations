@@ -50,7 +50,7 @@ void Simulation::Run() {
 }
 
 void Simulation::PrintData(std::ostream& os) {
-  os<<"step "<<steps_total_<<'\n';
+  os<<"step "<<current_step_<<'\n';
   physical_state_->Print(os);
 }
 
@@ -60,8 +60,7 @@ void Simulation::Steps(int steps) {
     ++current_step_;
   }
   TimeStamp();
-  out_stream_<<"step "<<steps_total_<<'\n';
-  physical_state_->Print(out_stream_);
+  PrintData(out_stream_);
 }
 
 int Simulation::Step() {

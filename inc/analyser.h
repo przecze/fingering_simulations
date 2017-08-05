@@ -73,6 +73,7 @@ class Analyser {
   void PrintTips();
   void RawPrint();
   void Step();
+  bool front_reached_end_ = false;
  private:
   void SortTips();
   bool VPointBurned(int,int);

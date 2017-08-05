@@ -62,9 +62,12 @@ void Tip::PrintVelInfo(std::ostream& output_stream_) {
 
 void Tip::CustomPrint(std::ostream& o) {
   o<<num<<' '
+   <<(parent?parent->num:-1)<<' '
+   <<x<<' '
+   <<y<<' '
    <<lapl<<' '
    <<vel<<' '
-   <<(parent?parent->num:-1)<<' '
+   <<flow<<' '
    ;
 }
 
@@ -135,7 +138,6 @@ void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
 }
 
 void Analyser::PrintTips() {
-  output_stream_<<tips_.size()<<std::endl;
   for(auto& tip : tips_) {
     output_stream_<<current_step_<<' ';
     tip.CustomPrint(output_stream_);
@@ -177,7 +179,6 @@ void Analyser::SkipFieldFromInput() {
 void Analyser::ReadFieldFromInput() {
   char field_name;
   input_stream_>>field_name;
-  //std::cout<<"reading field: "<<field_name<<std::endl;
   int size_x;
   int size_y;
   input_stream_>>size_x>>size_y;
@@ -208,7 +209,6 @@ void Analyser::ReadFieldFromInput() {
 bool Analyser::ReadStepLine() {
   std::string step_word;
   input_stream_>>step_word>>current_step_;
-  //std::cout<<"new step no: "<<current_step_<<std::endl;
   return input_stream_.good();
 }
 
@@ -217,8 +217,9 @@ void Analyser::UpdateFrontPosition() {
   while(next_front_position<(w_->size_x_) && CheckIfLineBurned(next_front_position)){
     ++next_front_position;
   }
-  if (next_front_position == w_->size_x_ - 1) {
-    AnalyseFingers();
+  if (next_front_position > w_->size_x_ - r_for_lapl_calculation_ - 3) {
+    std::cout<<"Front reached the end";
+    front_reached_end_ = true;
   }
   front_position_ = next_front_position;
   //std::cout<<"new front pos: " <<front_position_<<std::endl;
