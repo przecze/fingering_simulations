@@ -41,6 +41,9 @@ class Tip {
   bool bifurcated=false;
   int child_num=-1;
   Tip* parent=nullptr;
+  double max_v = -1;
+  int max_v_x;
+  int max_v_y;
   void PrintFlowInfo(std::ostream& output_stream_);
   void PrintLaplInfo(std::ostream& output_stream_);
   void PrintVelInfo(std::ostream& output_stream_);
@@ -75,6 +78,7 @@ class Analyser {
   void Step();
   bool simulation_ended_ = false;
  private:
+  bool max_v_as_center_ = true;
   void SortTips();
   bool VPointBurned(int,int);
   void AnalyseFingers();
@@ -91,7 +95,7 @@ class Analyser {
   std::unique_ptr<Field> w_;
   static constexpr double burn_offset_ = 0.9;
   static constexpr double min_v_ = 0.5;
-  static constexpr int r_for_lapl_calculation_ = 30;
+  static constexpr int r_for_lapl_calculation_ = 15;
   std::vector<Tip> tips_;
   std::vector<Tip> old_tips_;
   int current_step_;

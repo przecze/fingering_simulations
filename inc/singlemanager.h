@@ -34,7 +34,7 @@ class SingleManager {
   int max_step_ = 100000000;
   int save_steps_ = 10000;
   int change_step_ = 20000;
-  int after_change_step_ = 500;
+  int after_change_step_ = 400;
 };
 
 #endif

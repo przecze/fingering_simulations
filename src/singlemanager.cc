@@ -33,8 +33,8 @@ SingleManager::SingleManager(
 
 void SingleManager::Init() {
   simulation_ = std::unique_ptr<Simulation>( new Simulation(
-        400,
-        200,
+        500,
+        500,
         save_steps_,
         max_step_,
         data_out_,

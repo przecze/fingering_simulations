@@ -133,6 +133,10 @@ void Analyser::FindTips() {
 void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
   marked(i, j) = 0;
   tip.Add(i,j, v_->size_x_);
+  if ((*v_)(i,j)>tip.max_v) {
+    tip.max_v_x = i;
+    tip.max_v_y = j;
+  }
   int ni;
   int nj;
   for (int magic = 0; magic < 4; ++magic) {
@@ -438,6 +442,10 @@ void Analyser::CalculateValuesForTip(Tip& tip) {
   tip.flow_ang = atan2(tip.flow_y, tip.flow_x);
   tip.flow = tip.flow_y*tip.flow_y + tip.flow_x*tip.flow_x;
   tip.fuel = (*w_)(tip.x, tip.y);
+  if (max_v_as_center_) {
+    tip.x = tip.max_v_x;
+    tip.y = tip.max_v_y;
+  }
 }
 
 void Analyser::PrintStepLine(std::ostream& os) {
