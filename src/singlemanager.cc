@@ -32,7 +32,7 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<SingleFingerSimulation>( new SingleFingerSimulation(
+  simulation_ = std::unique_ptr<Simulation>( new Simulation(
         400,
         200,
         save_steps_,
@@ -48,7 +48,7 @@ void SingleManager::Init() {
 
 void SingleManager::Run() {
   simulation_->InitValues();
-  while(current_step_ < max_step_ && !analyser_->front_reached_end_) {
+  while(current_step_ < max_step_ && !analyser_->simulation_ended_) {
     Step();
   }
 }
@@ -62,8 +62,8 @@ void SingleManager::Step() {
     communication_stream_<<std::flush;
     std::cout<<"new data. Performing analysis..."<<std::endl;
     analyser_->Step();
-    if (analyser_->front_reached_end_) {
-      std::cout<<"SM:front-end signal from analyser, ending sim"<<std::endl;
+    if (analyser_->simulation_ended_) {
+      std::cout<<"SM: end signal from analyser, ending sim"<<std::endl;
     }
   } else if (current_step_ == change_step_) {
     simulation_->Ignite();

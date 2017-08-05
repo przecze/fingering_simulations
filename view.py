@@ -21,14 +21,13 @@ file_in = open(file_path, 'r')
 fig=plt.figure() 
 init = True
 viewing = False
-print "plotting.."
 while(file_in):
 #for i in range(3):
     plt.clf()
     try:
         step_word, step_no = file_in.readline().split()
         step_no = int(step_no)
-        if(step_no >= start_viewing_step):
+        if(step_no >= start_viewing_step and not viewing):
             viewing = True
             print step_no, "start viewing"
         for field in range(3):

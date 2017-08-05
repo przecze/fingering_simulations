@@ -15,12 +15,15 @@ class Simulation {
       int threads_number = 1,
       double Pe = 0.3
       );
+  virtual ~Simulation();
   void Run();
   void Steps(int);
-  void InitValues();
+  virtual void InitValues();
+  virtual void Ignite();
   void PrintData(std::ostream&);
   int Step();
   int current_step_ = 0;
+  bool ignited_=false;
  protected: 
   std::ostream& out_stream_;
   std::unique_ptr<PhysicalState> physical_state_;

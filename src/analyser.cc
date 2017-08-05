@@ -65,6 +65,8 @@ void Tip::CustomPrint(std::ostream& o) {
    <<(parent?parent->num:-1)<<' '
    <<x<<' '
    <<y<<' '
+   <<vel_x<<' '
+   <<vel_y<<' '
    <<lapl<<' '
    <<vel<<' '
    <<flow<<' '
@@ -121,6 +123,11 @@ void Analyser::FindTips() {
       }
     }
   }
+  if (tips_.size() == 0) {
+    std::cout<<"Analyser: no tips found!"<<std::endl;
+    simulation_ended_ = true;
+  }
+
 }
 
 void Analyser::Mark(Field &marked, Tip &tip, int i, int j) {
@@ -219,7 +226,7 @@ void Analyser::UpdateFrontPosition() {
   }
   if (next_front_position > w_->size_x_ - r_for_lapl_calculation_ - 3) {
     std::cout<<"Front reached the end";
-    front_reached_end_ = true;
+    simulation_ended_ = true;
   }
   front_position_ = next_front_position;
   //std::cout<<"new front pos: " <<front_position_<<std::endl;

@@ -12,7 +12,6 @@ class SingleFingerSimulation : public Simulation {
   void InitValues();
   void Ignite();
   void ApplyBoundaryConditions();
-  bool ignited_=false;
 };
 
 
@@ -25,7 +24,7 @@ class SingleManager {
   void Run();
   void Init();
  private:
-  std::unique_ptr<SingleFingerSimulation> simulation_;
+  std::unique_ptr<Simulation> simulation_;
   std::unique_ptr<Analyser> analyser_;
   std::stringstream communication_stream_;
   std::ostream& data_out_;

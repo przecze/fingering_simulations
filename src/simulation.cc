@@ -32,6 +32,7 @@ Simulation::Simulation(
       system_clock::now().time_since_epoch()).count();
 }
 
+Simulation::~Simulation() {};
 
 void Simulation::Run() {
   std::cout<<"Running simulation!"<<std::endl;
@@ -137,9 +138,14 @@ void Simulation::InitValues() {
   physical_state_->u_.SetValuePart(1, size_x_-1, size_x_, 0, size_y_);
   physical_state_->u_.SetRandomPart(0.0, 0.1, 0, 10, 0, size_y_);
   physical_state_->v_.SetValue(0);
-  physical_state_->v_.SetRandomPart(0, 1., 0, 10, 0, size_y_);
   physical_state_->w_.SetValue(1.);
 }
+
+void Simulation::Ignite() {
+  physical_state_->v_.SetRandomPart(0, 1., 0, 10, 0, size_y_);
+  ignited_ = true;
+}
+
 
 
 void Simulation::SwapOldAndNewState(){
