@@ -34,7 +34,7 @@ I_lapl = 4
 I_cvel_x = -3
 I_cvel_y = -2
 I_cvel = -1
-vel_cum_n = 50
+vel_cum_n = 20
 while(file_in):
     plt.clf()
     try:

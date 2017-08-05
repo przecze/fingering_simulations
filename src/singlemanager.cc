@@ -11,15 +11,18 @@ void SingleFingerSimulation::InitValues() {
 }
 
 void SingleFingerSimulation::Ignite() {
-  physical_state_->v_.SetValuePart(0.6, 0, 20, size_y_/2-5, size_y_/2+5);
+  physical_state_->v_.SetValuePart(0.6, 0, 20, size_y_/2-2, size_y_/2+2);
   ignited_=true;
 }
 
 void SingleFingerSimulation::ApplyBoundaryConditions() {
   Simulation::ApplyBoundaryConditions();
   if (!ignited_) {
-    new_state_->u_.SetValuePart(0., 0, 20, size_y_/2-5, size_y_/2+5);
+    new_state_->u_.SetValuePart(0., 0, 20, size_y_/2-2, size_y_/2+2);
   }
+}
+
+void OxygenOnlySimulation::Ignite() {
 }
 
 SingleManager::SingleManager(
@@ -32,9 +35,9 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new Simulation(
+  simulation_ = std::unique_ptr<Simulation>( new OxygenOnlySimulation(
         500,
-        500,
+        200,
         save_steps_,
         max_step_,
         data_out_,
@@ -48,7 +51,7 @@ void SingleManager::Init() {
 
 void SingleManager::Run() {
   simulation_->InitValues();
-  while(current_step_ < max_step_ && !analyser_->simulation_ended_) {
+  while(current_step_ < max_step_) {// && !analyser_->simulation_ended_) {
     Step();
   }
 }

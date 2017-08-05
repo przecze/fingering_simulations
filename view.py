@@ -58,10 +58,14 @@ while(file_in):
                 for i in range(size_x):
                     dummy=file_in.readline()
         if viewing:
+            ax = plt.subplot("224")
+            print data[0,:, size_y/2].shape
+            print np.arange(size_x).shape
+            ax.plot(data[0,:,size_y/2][::-1], np.arange(size_x))
             plt.suptitle("Step "+str(step_no))
             plt.pause(0.01)
     except ValueError as err:
-        print 'done'
+        print 'done', err.message
         for field in range(3):
             ax = plt.subplot("22"+str(field+1))
             cax = ax.imshow(data[field], interpolation='nearest')

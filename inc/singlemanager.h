@@ -14,6 +14,11 @@ class SingleFingerSimulation : public Simulation {
   void ApplyBoundaryConditions();
 };
 
+class OxygenOnlySimulation : public Simulation {
+ public:
+  using Simulation::Simulation;
+  void Ignite();
+};
 
 class SingleManager {
  public:
