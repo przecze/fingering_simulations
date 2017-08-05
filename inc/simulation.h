@@ -21,7 +21,7 @@ class Simulation {
   void PrintData(std::ostream&);
   int Step();
   int current_step_ = 0;
- private: 
+ protected: 
   std::ostream& out_stream_;
   std::unique_ptr<PhysicalState> physical_state_;
   std::unique_ptr<PhysicalState> new_state_;

@@ -6,6 +6,12 @@
 #include<simulation.h>
 #include<analyser.h>
 
+class SingleFingerSimulation : public Simulation {
+ public:
+  void InitValues();
+};
+
+
 class SingleManager {
  public:
   SingleManager(

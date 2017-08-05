@@ -4,6 +4,14 @@
 #include<iostream>
 #include<memory>
 
+void SingleFingerSimulation::InitValues() {
+  Simulation::InitValues();
+  physical_state_->v_.SetValue(0.0);
+
+  physical_state_->u_.SetValuePart(0.6, 0, 20, size_y_/2-10, size_y_/2+10);
+}
+
+
 SingleManager::SingleManager(
       std::ostream& output,
       std::ostream& analyser_out) :
