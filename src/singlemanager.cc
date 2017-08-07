@@ -41,7 +41,7 @@ void SingleManager::Init() {
         save_steps_,
         max_step_,
         data_out_,
-        4,
+        8,
         0.5));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,

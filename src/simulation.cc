@@ -133,15 +133,15 @@ void Simulation::ApplyBoundaryConditions() {
 }
 
 void Simulation::InitValues() {
-  physical_state_->u_.SetValue(u0);
-  physical_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
-  physical_state_->u_.SetValuePart(1, size_x_-1, size_x_, 0, size_y_);
-  physical_state_->u_.SetRandomPart(0.0, 0.1, 0, 10, 0, size_y_);
+  for (int i = 0; i<size_x_; ++i) {
+    physical_state_->u_.SetValuePart(u0*(1-std::exp(-Le*phi*dx*i*Pe)), i, i+1, 0, size_y_);
+  }
   physical_state_->v_.SetValue(0);
   physical_state_->w_.SetValue(1.);
 }
 
 void Simulation::Ignite() {
+  //physical_state_->u_.SetRandomPart(0.0, 0.1, 0, 10, 0, size_y_);
   physical_state_->v_.SetRandomPart(0, 1., 0, 10, 0, size_y_);
   ignited_ = true;
 }
