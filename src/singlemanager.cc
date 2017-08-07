@@ -6,8 +6,23 @@
 
 
 void SingleFingerSimulation::Ignite() {
-  physical_state_->v_.SetValuePart(1, 19, 20, size_y_/2-2, size_y_/2+2);
+  physical_state_->v_.SetValuePart(1,  55, 60, size_y_/2-1, size_y_/2+1);
   ignited_=true;
+}
+
+void SingleFingerSimulation::InitValues() {
+  Simulation::InitValues();
+  for (int i = 0; i<size_x_; ++i) {
+    physical_state_->u_.SetValuePart(1-std::exp(-Le*phi*dx*i*Pe), i, i+1, 0, size_y_);
+  }
+}
+
+void SingleFingerSimulation::ApplyBoundaryConditions() {
+  if (!ignited_) {
+    new_state_->u_.SetValuePart(0.05, 55, 60, size_y_/2-1, size_y_/2+1);
+    //new_state_->u_.SetValuePart(0.15, 1, 2, 0, size_y_);
+  }
+  Simulation::ApplyBoundaryConditions();
 }
 
 void OxygenOnlySimulation::Ignite() {
@@ -23,7 +38,7 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new Simulation(
+  simulation_ = std::unique_ptr<Simulation>( new SingleFingerSimulation(
         200,
         200,
         save_steps_,

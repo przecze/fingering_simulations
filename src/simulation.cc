@@ -126,7 +126,7 @@ void Simulation::ApplyBoundaryConditions() {
   double K = Pe*Le*phi*dx;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K + new_state_->u_(size_x_-2,j))/(1+K);
-    new_state_->u_(1, j) = new_state_->u_(2,j);
+    new_state_->u_(0, j) = new_state_->u_(1,j);
   }
   new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
   new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
