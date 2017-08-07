@@ -23,7 +23,9 @@ Simulation::Simulation(
     last_time_stamp_(0),
     Pe(Pe)
     {
-  for (int x_end = size_x/threads_number; x_end<size_x; x_end+=size_x/threads_number) {
+  int x_end = 0;
+  for (int i = 0; i<threads_number_-1; ++i) {
+    x_end+=size_x_/threads_number;
     ranges_for_threads_.push_back(x_end);
   }
   ranges_for_threads_.push_back(size_x); 
@@ -122,11 +124,12 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
 
 void Simulation::ApplyBoundaryConditions() {
-  new_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
   double K = Pe*Le*phi*dx;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K + new_state_->u_(size_x_-2,j))/(1+K);
     new_state_->u_(0, j) = new_state_->u_(1,j);
+  }
+  if (current_step_<10) {
   }
   new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
   new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
@@ -139,6 +142,7 @@ void Simulation::InitValues() {
   physical_state_->u_.SetValue(1.);
   physical_state_->v_.SetValue(0);
   physical_state_->w_.SetValue(1.);
+  PrintData(out_stream_);
 }
 
 void Simulation::Ignite() {

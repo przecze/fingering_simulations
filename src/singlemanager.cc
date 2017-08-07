@@ -38,9 +38,9 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new SingleFingerSimulation(
-        200,
-        200,
+  simulation_ = std::unique_ptr<Simulation>( new OxygenOnlySimulation(
+        300,
+        300,
         save_steps_,
         max_step_,
         data_out_,
