@@ -46,13 +46,8 @@ while(file_in):
                     data[field,i,:] = file_in.readline().split()
                 ax = plt.subplot("22"+str(field+1))
                 cax = ax.imshow(data[field], interpolation='nearest')
-                if field==0:
-                        cax.set_clim(vmin=0, vmax=0.1)
-                        cbar = fig.colorbar(cax, orientation='vertical')
-                else:
-                        cax.set_clim(vmin=0, vmax=1)
-                        cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
-                print "added ", name,  'max= ', np.max(data[field,:,:])
+                cax.set_clim(vmin=0, vmax=1)
+                cbar = fig.colorbar(cax, ticks=[0,0.3, 0.5,1], orientation='vertical')
                 init = False
             else:
                 for i in range(size_x):
@@ -64,7 +59,7 @@ while(file_in):
             Le = 0.1*0.3
             phi = 0.458
             dx = 0.5/0.3
-            ax.plot(np.arange(size_x), 0.1*(1-np.exp(-Pe*Le*phi*dx*np.arange(size_x))))
+            ax.plot(np.arange(size_x), (1-np.exp(-Pe*Le*phi*dx*np.arange(size_x))))
             plt.suptitle("Step "+str(step_no))
             plt.pause(0.01)
     except ValueError as err:
