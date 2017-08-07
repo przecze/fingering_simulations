@@ -127,8 +127,7 @@ void Simulation::ApplyBoundaryConditions() {
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K*u0 + new_state_->u_(size_x_-2,j))/(1+K);
   }
-  //new_state_->u_.SetValuePart(0.1, size_x_-1, size_x_, 0, size_y_);
-  new_state_->v_.SetValuePart(1., 0, 1, 0, size_y_);
+  new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
   new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
 }
 
@@ -141,8 +140,8 @@ void Simulation::InitValues() {
 }
 
 void Simulation::Ignite() {
-  //physical_state_->u_.SetRandomPart(0.0, 0.1, 0, 10, 0, size_y_);
-  physical_state_->v_.SetRandomPart(0, 1., 0, 10, 0, size_y_);
+  //physical_state_->u_.SetRandomPart(u0, 0.0, 20, 30, 0, size_y_);
+  physical_state_->v_.SetRandomPart(0, 1., 20, 30, 0, size_y_);
   ignited_ = true;
 }
 

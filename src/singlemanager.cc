@@ -35,7 +35,7 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new OxygenOnlySimulation(
+  simulation_ = std::unique_ptr<Simulation>( new Simulation(
         200,
         200,
         save_steps_,
@@ -60,7 +60,7 @@ void SingleManager::Step() {
   std::cout<<"current step:"<<current_step_<<std::endl;
   simulation_->Steps(save_steps_);
   current_step_ = simulation_->current_step_;
-  if (current_step_ > change_step_) {
+  if (current_step_ > change_step_ + 3*after_change_step_) {
     simulation_->PrintData(communication_stream_);
     communication_stream_<<std::flush;
     std::cout<<"new data. Performing analysis..."<<std::endl;

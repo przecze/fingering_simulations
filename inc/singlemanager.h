@@ -36,9 +36,9 @@ class SingleManager {
   std::ostream& analyser_out_;
   void Step();
   int current_step_ = 0;
-  int max_step_ = 100000000;
+  int max_step_ = 40000000;
   int save_steps_ = 4000;
-  int change_step_ = 400000;
+  int change_step_ = 4000;
   int after_change_step_ = 4000;
 };
 
