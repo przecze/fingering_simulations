@@ -9,9 +9,7 @@
 class SingleFingerSimulation : public Simulation {
  public:
   using Simulation::Simulation;
-  void InitValues();
   void Ignite();
-  void ApplyBoundaryConditions();
 };
 
 class OxygenOnlySimulation : public Simulation {

@@ -4,22 +4,10 @@
 #include<iostream>
 #include<memory>
 
-void SingleFingerSimulation::InitValues() {
-  Simulation::InitValues();
-  physical_state_->v_.SetValue(0.0);
-  physical_state_->u_.SetValue(0.1);
-}
 
 void SingleFingerSimulation::Ignite() {
-  physical_state_->v_.SetValuePart(0.6, 0, 20, size_y_/2-2, size_y_/2+2);
+  physical_state_->v_.SetValuePart(1, 19, 20, size_y_/2-2, size_y_/2+2);
   ignited_=true;
-}
-
-void SingleFingerSimulation::ApplyBoundaryConditions() {
-  Simulation::ApplyBoundaryConditions();
-  if (!ignited_) {
-    new_state_->u_.SetValuePart(0., 0, 20, size_y_/2-2, size_y_/2+2);
-  }
 }
 
 void OxygenOnlySimulation::Ignite() {
@@ -42,7 +30,7 @@ void SingleManager::Init() {
         max_step_,
         data_out_,
         8,
-        0.5));
+        0.1));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,
         analyser_out_

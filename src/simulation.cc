@@ -126,22 +126,24 @@ void Simulation::ApplyBoundaryConditions() {
   double K = Pe*Le*phi*dx;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K + new_state_->u_(size_x_-2,j))/(1+K);
+    new_state_->u_(1, j) = new_state_->u_(2,j);
   }
   new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
   new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
 }
 
 void Simulation::InitValues() {
-  for (int i = 0; i<size_x_; ++i) {
-    physical_state_->u_.SetValuePart(1-std::exp(-Le*phi*dx*i*Pe), i, i+1, 0, size_y_);
-  }
+  //for (int i = 0; i<size_x_; ++i) {
+  //  physical_state_->u_.SetValuePart(1-std::exp(-Le*phi*dx*i*Pe), i, i+1, 0, size_y_);
+  //}
+  physical_state_->u_.SetValue(1.);
   physical_state_->v_.SetValue(0);
   physical_state_->w_.SetValue(1.);
 }
 
 void Simulation::Ignite() {
   //physical_state_->u_.SetRandomPart(u0, 0.0, 20, 30, 0, size_y_);
-  physical_state_->v_.SetRandomPart(0, 1., 20, 30, 0, size_y_);
+  physical_state_->v_.SetRandomPart(0, 1., 3, 10, 0, size_y_);
   ignited_ = true;
 }
 
