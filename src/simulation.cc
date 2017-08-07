@@ -32,7 +32,6 @@ Simulation::Simulation(
       system_clock::now().time_since_epoch()).count();
 }
 
-Simulation::~Simulation() {};
 
 void Simulation::Run() {
   std::cout<<"Running simulation!"<<std::endl;
@@ -105,7 +104,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
           dt*(
               (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
               - gamma*f/phi
-              - Pe/dx/2.0*(U(i-1,j) - U(i+1,j))
+              - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
               );
 
       NV(i,j) = v +
@@ -124,8 +123,9 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
 void Simulation::ApplyBoundaryConditions() {
   new_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
+  double K = Pe*Le*phi*dx;
   for(int j = 0; j<size_y_; ++j){
-    new_state_->u_(size_x_-1, j) = 0.1*(new_state_->u_(size_x_-2,j) + dx*Pe*Le*phi)/(0.1+dx*Pe*Le*phi);
+    new_state_->u_(size_x_-1, j) = (K*u0 + new_state_->u_(size_x_-2,j))/(1+K);
   }
   //new_state_->u_.SetValuePart(0.1, size_x_-1, size_x_, 0, size_y_);
   new_state_->v_.SetValuePart(1., 0, 1, 0, size_y_);
@@ -133,7 +133,7 @@ void Simulation::ApplyBoundaryConditions() {
 }
 
 void Simulation::InitValues() {
-  physical_state_->u_.SetValue(0.1);
+  physical_state_->u_.SetValue(u0);
   physical_state_->u_.SetValuePart(0., 0, 1, 0, size_y_);
   physical_state_->u_.SetValuePart(1, size_x_-1, size_x_, 0, size_y_);
   physical_state_->u_.SetRandomPart(0.0, 0.1, 0, 10, 0, size_y_);

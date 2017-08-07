@@ -15,7 +15,6 @@ class Simulation {
       int threads_number = 1,
       double Pe = 0.3
       );
-  virtual ~Simulation();
   void Run();
   void Steps(int);
   virtual void InitValues();
@@ -51,5 +50,6 @@ class Simulation {
   constexpr static double lam=0.0   ;
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.1*0.3    ;
+  constexpr static double u0 = 0.1;
 };
 #endif

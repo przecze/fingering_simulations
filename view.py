@@ -59,9 +59,12 @@ while(file_in):
                     dummy=file_in.readline()
         if viewing:
             ax = plt.subplot("224")
-            print data[0,:, size_y/2].shape
-            print np.arange(size_x).shape
-            ax.plot(data[0,:,size_y/2][::-1], np.arange(size_x))
+            ax.plot(np.arange(size_x), data[0,:,size_y/2])
+            Pe = 0.5
+            Le = 0.1*0.3
+            phi = 0.458
+            dx = 0.5/0.3
+            ax.plot(np.arange(size_x), 0.1*(1-np.exp(-Pe*Le*phi*dx*np.arange(size_x))))
             plt.suptitle("Step "+str(step_no))
             plt.pause(0.01)
     except ValueError as err:

@@ -36,12 +36,12 @@ SingleManager::SingleManager(
 
 void SingleManager::Init() {
   simulation_ = std::unique_ptr<Simulation>( new OxygenOnlySimulation(
-        500,
+        200,
         200,
         save_steps_,
         max_step_,
         data_out_,
-        12,
+        4,
         0.5));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,

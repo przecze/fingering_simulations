@@ -37,8 +37,8 @@ class SingleManager {
   void Step();
   int current_step_ = 0;
   int max_step_ = 100000000;
-  int save_steps_ = 10000;
-  int change_step_ = 20000;
+  int save_steps_ = 400;
+  int change_step_ = 400;
   int after_change_step_ = 400;
 };
 

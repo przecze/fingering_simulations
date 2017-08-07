@@ -1,5 +1,5 @@
 # Declaration of variables
-FLAGS = -Iinc -Lobj -pthread -std=c++11
+FLAGS = -Iinc -Lobj -pthread -std=c++11 -O3
  
 # File names
 EXEC = exec
