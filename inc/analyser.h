@@ -61,6 +61,8 @@ class Analyser {
       std::istream& input_stream,
       std::ostream& output_stream
       );
+  int size_x_;
+  int size_y_;
   void PerformAnalysis(int start_step=0, int end_step=1e9);
   void RewriteData();
   void SkipToStep(int);
@@ -77,6 +79,7 @@ class Analyser {
   void RawPrint();
   void Step();
   bool simulation_ended_ = false;
+  int front_position_;
  private:
   bool max_v_as_center_ = true;
   void SortTips();
@@ -99,7 +102,6 @@ class Analyser {
   std::vector<Tip> tips_;
   std::vector<Tip> old_tips_;
   int current_step_;
-  int front_position_;
   int tip_num_;
 
 };

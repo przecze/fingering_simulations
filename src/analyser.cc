@@ -115,9 +115,11 @@ void Analyser::FindTips() {
   tips_.clear();
   Field marked(size_x,size_y);
   marked.SetValue(1.);
+  std::cout<<"check form "<<x_to_start<<" to "<<std::min(front_position_, size_x-5)<<std::endl;
   for(int i = x_to_start; i<std::min(front_position_, size_x-5); ++i) {
     for(int j = 0; j<size_y; ++j) {
       if(marked(i,j) ==1 && VPointBurned(i,j)) {
+        std::cout<<"tip found at "<<i<<" "<<j<<std::endl;
         tips_.push_back(Tip(i,j));
         Mark(marked, tips_.back(), i, j);
       }
@@ -190,13 +192,11 @@ void Analyser::SkipFieldFromInput() {
 void Analyser::ReadFieldFromInput() {
   char field_name;
   input_stream_>>field_name;
-  int size_x;
-  int size_y;
-  input_stream_>>size_x>>size_y;
+  input_stream_>>size_x_>>size_y_;
   if (!u_) {
-    w_ = std::unique_ptr<Field>(new Field(size_x, size_y));
-    v_ = std::unique_ptr<Field>(new Field(size_x, size_y));
-    u_ = std::unique_ptr<Field>(new Field(size_x, size_y));
+    w_ = std::unique_ptr<Field>(new Field(size_x_, size_y_));
+    v_ = std::unique_ptr<Field>(new Field(size_x_, size_y_));
+    u_ = std::unique_ptr<Field>(new Field(size_x_, size_y_));
   }
   Field* ptr;
   if (field_name=='u') {
@@ -209,8 +209,8 @@ void Analyser::ReadFieldFromInput() {
     ptr = w_.get();
   }
   Field& field = *ptr;
-  for(int i = 0; i<size_x; ++i){
-    for(int j = 0; j<size_y; ++j) {
+  for(int i = 0; i<size_x_; ++i){
+    for(int j = 0; j<size_y_; ++j) {
       input_stream_>>field(i,j);
     }
   }
@@ -443,8 +443,8 @@ void Analyser::CalculateValuesForTip(Tip& tip) {
   tip.flow = tip.flow_y*tip.flow_y + tip.flow_x*tip.flow_x;
   tip.fuel = (*w_)(tip.x, tip.y);
   if (max_v_as_center_) {
-    tip.x = tip.max_v_x;
-    tip.y = tip.max_v_y;
+    tip.x = (tip.max_v_x+size_x_)%size_x_;
+    tip.y = (tip.max_v_y+size_y_)%size_y_;
   }
 }
 

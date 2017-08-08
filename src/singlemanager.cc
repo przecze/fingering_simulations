@@ -8,6 +8,7 @@
 void SingleFingerSimulation::Ignite() {
   physical_state_->v_.SetValuePart(1,  55, 60, size_y_/2-1, size_y_/2+1);
   ignited_=true;
+    std::cout<<"Ignited"<<std::endl;
 }
 
 void SingleFingerSimulation::InitValues() {
@@ -54,6 +55,7 @@ void SingleManager::Init() {
 
 void SingleManager::Run() {
   simulation_->InitValues();
+  analyser_->front_position_ = 60;
   while(current_step_ < max_step_) {// && !analyser_->simulation_ended_) {
     Step();
   }
@@ -73,7 +75,8 @@ void SingleManager::Step() {
     }
   } else if (current_step_ == change_step_) {
     simulation_->Ignite();
-    std::cout<<"change step"<<std::endl;
+    std::cout<<"Ignited"<<std::endl;
     save_steps_ = after_change_step_;
+    std::cout<<"change step"<<std::endl;
   }
 }
