@@ -40,13 +40,13 @@ SingleManager::SingleManager(
 
 void SingleManager::Init() {
   simulation_ = std::unique_ptr<Simulation>( new SingleFingerSimulation(
-        500,
-        200,
+        2000,
+        800,
         save_steps_,
         max_step_,
         data_out_,
-        10,
-        0.1));
+        40,
+        0.2));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,
         analyser_out_

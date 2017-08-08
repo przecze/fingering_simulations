@@ -81,7 +81,7 @@ class Analyser {
   bool simulation_ended_ = false;
   int front_position_;
  private:
-  bool max_v_as_center_ = true;
+  bool max_v_as_center_ = false;
   void SortTips();
   bool VPointBurned(int,int);
   void AnalyseFingers();

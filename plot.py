@@ -28,13 +28,15 @@ data2 = []
 tip_nums = []
 bifs =[]
 bifs2 =[]
+I_pos_x = 0
+I_pos_y = 1
 I_vel_x = 2
 I_vel_y = 3
 I_lapl = 4
 I_cvel_x = -3
 I_cvel_y = -2
 I_cvel = -1
-vel_cum_n = 20
+vel_cum_n = 1
 while(file_in):
     plt.clf()
     try:
@@ -53,20 +55,12 @@ while(file_in):
             raise ValueError("eof")
         if (step<start_plotting_step):
             continue
-        #if (10001>1000):#TODO adjust velocity here
-        #    print "adj vel", vel
-        #    vel  = 0
         try:
             i = tip_nums.index(tip_num)
         except:
             tip_nums.append(tip_num)
             i = tip_nums.index(tip_num)
             data.append([])
-        #modify velocities
-        if(tip_data[I_vel_y]) > 250:
-            tip_data[I_vel_y] = tip_data[I_vel_y] -500#TEMPORARY SOLUTION
-        if(tip_data[I_vel_y]) < -250:
-            tip_data[I_vel_y] = 500 + tip_data[I_vel_y] #TEMPORARY SOLUTION
         tip_data.append(tip_data[I_vel_x]) #cum_vel_x
         tip_data.append(tip_data[I_vel_y]) #cum_vel_y
         tI_cvel_x = -2
@@ -88,7 +82,7 @@ while(file_in):
         print 'done', err.message
         tip_indexes = range(len(data))
         #tip_indexes = [0,1,2,3]
-        data_indexes = [I_lapl, I_cvel]
+        data_indexes = [I_lapl, I_cvel_x, I_cvel_y]
         #data = [tip[0::10] for tip in data]
         for data_index in data_indexes:
             ax = plt.subplot(str(len(data_indexes))+"1"+str(data_indexes.index(data_index)+1))

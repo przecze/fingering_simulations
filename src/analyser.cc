@@ -443,9 +443,11 @@ void Analyser::CalculateValuesForTip(Tip& tip) {
   tip.flow = tip.flow_y*tip.flow_y + tip.flow_x*tip.flow_x;
   tip.fuel = (*w_)(tip.x, tip.y);
   if (max_v_as_center_) {
-    tip.x = (tip.max_v_x+size_x_)%size_x_;
-    tip.y = (tip.max_v_y+size_y_)%size_y_;
+    tip.x = tip.max_v_x;
+    tip.y = tip.max_v_y;
   }
+  tip.x = (tip.x+size_x_)%size_x_;
+  tip.y = (tip.y+size_y_)%size_y_;
 }
 
 void Analyser::PrintStepLine(std::ostream& os) {
