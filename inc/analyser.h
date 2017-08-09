@@ -17,6 +17,8 @@ class Tip {
  public:
   Tip(int,int);
   void Add(int,int,int);
+  void Fix(int);
+  int Width();
   int Dist(const Tip&, int size_x);
   int x_max;
   int x_min;
@@ -57,9 +59,14 @@ void PrintVelInfoFormat(std::ostream&);
 
 class Analyser {
  public:
+ enum OutputType {
+  kTipsData,
+  kMetaData,
+ };
   Analyser(
       std::istream& input_stream,
-      std::ostream& output_stream
+      std::ostream& output_stream,
+      OutputType = kTipsData
       );
   int size_x_;
   int size_y_;
@@ -80,7 +87,9 @@ class Analyser {
   void Step();
   bool simulation_ended_ = false;
   int front_position_;
+  void OnEnd();
  private:
+  OutputType output_type_;
   bool max_v_as_center_ = false;
   void SortTips();
   bool VPointBurned(int,int);
@@ -91,6 +100,9 @@ class Analyser {
   void PrintMinValue();
   void CalculateValuesForTip(Tip&);
   bool CheckIfLineBurned(int line_num);
+  double AvgFrontVelocity();
+  double AvgTipsDist();
+  double AvgTipsWidth();
   std::istream& input_stream_;
   std::ostream& output_stream_;
   std::unique_ptr<Field> u_;
@@ -101,6 +113,8 @@ class Analyser {
   static constexpr int r_for_lapl_calculation_ = 15;
   std::vector<Tip> tips_;
   std::vector<Tip> old_tips_;
+  std::vector<int> tips_count_;
+  std::vector<int> tips_width_;
   int current_step_;
   int tip_num_;
 

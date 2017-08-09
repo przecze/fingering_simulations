@@ -19,6 +19,16 @@ void Tip::Add(int i, int j, int size_y) {
   y = (y_min + y_max)/2;
 }
 
+void Tip::Fix(int size_y) {
+  y = (y+size_y)%size_y;
+  y_min = (y_min+size_y)%size_y;
+
+}
+
+int Tip::Width() {
+  return y_max -y_min;
+}
+
 int Tip::Dist(const Tip& tip, int size_y) {
   int y_dist = std::abs(tip.y-y);
   y_dist = std::min(y_dist, size_y - y_dist);
@@ -76,10 +86,12 @@ void Tip::CustomPrint(std::ostream& o) {
 
 Analyser::Analyser(
     std::istream& input_stream,
-    std::ostream& output_stream
+    std::ostream& output_stream,
+    OutputType type
     ) : 
     input_stream_(input_stream),
     output_stream_(output_stream),
+    output_type_(type),
     front_position_(10),
     current_step_(0),
     tip_num_(0)
@@ -231,6 +243,7 @@ void Analyser::UpdateFrontPosition() {
   if (next_front_position > w_->size_x_ - r_for_lapl_calculation_ - 3) {
     std::cout<<"Front reached the end";
     simulation_ended_ = true;
+    OnEnd();
   }
   front_position_ = next_front_position;
   //std::cout<<"new front pos: " <<front_position_<<std::endl;
@@ -287,13 +300,28 @@ void Analyser::Step() {
     UpdateFrontPosition();
     FindTips();
     AnalyseTips();
-    PrintTips();
+    if (output_type_ == kTipsData) {
+      PrintTips();
+    }
     SortTips();
     old_tips_ = tips_;
   } else {
-    std::cout<<"Analyser: cant perform analysis step. Not enaugh data in stream"<<std::endl;
+    std::cout<<"Analyser: cant perform analysis step. Not enough data in stream"<<std::endl;
+    simulation_ended_ = true;
+    OnEnd();
   }
 }
+
+void Analyser::OnEnd() {
+  if (output_type_ == kMetaData) {
+    output_stream_ << AvgFrontVelocity()<<' '
+                   << AvgTipsDist() << ' '
+                   << AvgTipsWidth() << ' '
+                   ;
+    output_stream_<<std::endl;
+  }
+}
+
 
 void Analyser::AnalyseFingers() {
   int size_y = w_->size_y_;
@@ -339,7 +367,9 @@ void Analyser::AnalyseTips() {
   int size_y = v_->size_y_;
   int size_x = v_->size_x_;
   bool bifurcation_occured = false;
+  tips_count_.push_back(tips_.size());
   for (auto& tip : tips_) {
+    tips_width_.push_back(tip.Width());
     CalculateValuesForTip(tip);
     Tip* nearest = nullptr;
     int min_dist = size_x*size_x*4;
@@ -446,8 +476,7 @@ void Analyser::CalculateValuesForTip(Tip& tip) {
     tip.x = tip.max_v_x;
     tip.y = tip.max_v_y;
   }
-  tip.x = (tip.x+size_x_)%size_x_;
-  tip.y = (tip.y+size_y_)%size_y_;
+  tip.Fix(size_y_);
 }
 
 void Analyser::PrintStepLine(std::ostream& os) {
@@ -478,4 +507,32 @@ void Analyser::RawPrint() {
     output_stream_<<current_step_<<' '<<tip.lapl<<'\n';
   }
   output_stream_<<std::flush;
+}
+
+double Analyser::AvgFrontVelocity() {
+  return front_position_/double(current_step_);
+}
+
+double Analyser::AvgTipsDist() {
+  double avg_tip_count;
+  if ( tips_count_.size() != 0) {
+    avg_tip_count =
+        std::accumulate(tips_count_.begin(), tips_count_.end(), 0LL)/double(tips_count_.size());
+  } else {
+    avg_tip_count = 0.;
+  }
+
+  return double(size_x_)/avg_tip_count;
+}
+
+double Analyser::AvgTipsWidth() {
+  double avg_tip_width;
+  if ( tips_width_.size() != 0) {
+    avg_tip_width =
+        std::accumulate(tips_width_.begin(), tips_width_.end(), 0LL)/double(tips_width_.size());
+  } else {
+    avg_tip_width = 0.;
+  }
+
+  return avg_tip_width;
 }
