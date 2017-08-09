@@ -12,7 +12,8 @@ class SingleFingerSimulation : public Simulation {
   void InitValues();
   void Ignite();
   void ApplyBoundaryConditions();
-  bool ignited_ = false;
+  int ignition_x  = 120;
+  int ignition_w = 4;
 };
 
 class OxygenOnlySimulation : public Simulation {
@@ -39,7 +40,7 @@ class SingleManager {
   int current_step_ = 0;
   int max_step_ = 40000000;
   int save_steps_ = 4000;
-  int change_step_ = 20000;
+  int change_step_ = 16000;
   int after_change_step_ = 4000;
 };
 

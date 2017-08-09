@@ -61,6 +61,10 @@ void Simulation::Steps(int steps) {
     Step();
     ++current_step_;
   }
+  if (!ignited_) {
+    //idt = dt - 0.95* (dt - idt); //idt grows up to dt
+    //std::cout<<"new idt: "<<idt<<std::endl;
+  }
   TimeStamp();
   PrintData(out_stream_);
 }
@@ -93,31 +97,43 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
   Field& NV(new_state_->v_);
   Field& NW(new_state_->w_);
   
-  
-  for (int i = x_begin; i<x_end; ++i) {
-    for (int j = 0; j<size_y_; ++j) {
+  if (ignited_) { 
+    for (int i = x_begin; i<x_end; ++i) {
+      for (int j = 0; j<size_y_; ++j) {
 
-      const double u = U(i,j);
-      const double v = V(i,j);
-      const double w = W(i,j);
-      const double f = (v>vp?1:0)*u*theta*exp(theta-theta/v);
+        const double u = U(i,j);
+        const double v = V(i,j);
+        const double w = W(i,j);
+        const double f = (v>vp?1:0)*u*theta*exp(theta-theta/v);
 
-      NU(i,j) = u + 
-          dt*(
+        NU(i,j) = u + 
+            dt*(
               (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
-              - gamma*f/phi
-              - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
-              );
+                - gamma*f/phi
+                - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
+                );
 
-      NV(i,j) = v +
-          dt*(
-              1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
-              +  beta*gamma*f
-              -Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-              -ha*(v-sigma)
-              );
-      NW(i,j) = (v>vp?0:w);
+        NV(i,j) = v +
+            dt*(
+                1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
+                +  beta*gamma*f
+                -Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
+                -ha*(v-sigma)
+                );
+        NW(i,j) = (v>vp?0:w);
 
+      }
+    }
+  } else {
+    for (int i = x_begin; i<x_end; ++i) {
+      for (int j = 0; j<size_y_; ++j) {
+        const double u = U(i,j);
+        NU(i,j) = u + 
+            idt*(
+              (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
+                - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
+                );
+      }
     }
   }
 }
