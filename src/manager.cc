@@ -8,6 +8,7 @@
 
 #include<simulation.h>
 #include<analyser.h>
+#include<singlemanager.h>
 
 
 Manager::Manager(std::vector<double> Pe_values) :
@@ -18,8 +19,9 @@ Manager::Manager(std::vector<double> Pe_values) :
 }
 
 void Manager::Run() {
-  RunSimulations();
-  RunAnalyses();
+  RunSingleManagers();
+  //RunSimulations();
+  //RunAnalyses();
 }
 
 void Manager::RunSimulations() {
@@ -50,6 +52,37 @@ void Manager::RunSimulations() {
   CloseOutFiles();
 }
 
+void Manager::RunSingleManagers() {
+  GenerateFileNames();
+  OpenFilesForOut();
+  for(int i = 0; i<simulations_num_; ++i) {
+    auto tmp_u_ptr = std::unique_ptr<std::stringstream>(new std::stringstream());
+    analyses_results_.push_back(std::move(tmp_u_ptr));
+  }
+  for(int i =  0; i< simulations_num_; ++i) {
+    auto tmp_u_ptr = std::unique_ptr<SingleManager>(new SingleManager(
+          *(out_streams_[i]),
+          *(analyses_results_[i]),
+          Pe_values_[i]
+          ));
+    smanagers_.push_back(std::move(tmp_u_ptr));
+  }
+  std::vector<std::thread> threads;
+  for(int i = 0; i<simulations_num_; ++i) {
+    smanagers_[i]->Init();
+    threads.push_back(std::thread(
+          [this, i](){
+            this->smanagers_[i]->Run();
+          }));
+  }
+
+  for(auto& thr : threads) {
+  std::cout<<"streams created"<<std::endl;
+    thr.join();
+  }
+  CloseOutFiles();
+  PrintCombinedSMOuts();
+}
 void Manager::RunAnalyses() {
   OpenFilesForIn();
   for(int i = 0; i<simulations_num_; ++i) {
@@ -98,6 +131,14 @@ void Manager::PrintFetchedData() {
       print_stream<<position<<" ";
     }
     print_stream<<'\n';
+  }
+  print_stream.close();
+}
+
+void Manager::PrintCombinedSMOuts() {
+  std::ofstream print_stream(out_dir_+"pe_vs_properties.out", std::ofstream::out);
+  for(int i = 0; i<simulations_num_; ++i){
+    print_stream<<Pe_values_[i]<<" "<<analyses_results_[i]->rdbuf();
   }
   print_stream.close();
 }

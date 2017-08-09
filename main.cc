@@ -17,15 +17,15 @@ void SingleManagerTest() {
   std::cout<<"open: "<<out_filename<<std::endl;
   std::ofstream analyser_out(out_filename);
 
-  SingleManager simple(data_out, analyser_out);
+  SingleManager simple(data_out, analyser_out, 0.3);
   simple.Init();
   simple.Run();
   
 }
 
 void Sim() {
-  auto manager = Manager({.005, 0.01, 0.05, 0.1, 0.2, 0.5});
-  manager.out_dir_ = "runs/run012/";
+  auto manager = Manager({0.1,0.3,0.6,1.,2.,5.,10.,15.});
+  manager.out_dir_ = "out/";
   manager.threads_per_simulation_ = 10;
   manager.Run();
 }
@@ -44,6 +44,6 @@ void An() {
 
 int main(int argc, char** argv){
   std::srand(time(nullptr));
-  SingleManagerTest();
+  Sim();
   return 0;
 }

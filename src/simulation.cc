@@ -180,6 +180,12 @@ void Simulation::TimeStamp(){
   
   int new_time_stamp = duration_cast< milliseconds >(
       system_clock::now().time_since_epoch()).count();
-  std::cout<<"Simulation::TimeStamp : threads:"<<threads_number_<<", "<<(new_time_stamp-last_time_stamp_)*0.001<<"s since last time stamp"<<std::endl;
+  std::cout<<"Simulation::TimeStamp :"
+           <<"step: "<<current_step_<<", "
+           <<" threads:" <<threads_number_<<", "
+           <<"Pe: "<<Pe<<", "
+           <<(new_time_stamp-last_time_stamp_)*0.001
+           <<"s since last"<<std::endl
+           ;
   last_time_stamp_ = new_time_stamp;
 }

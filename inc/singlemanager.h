@@ -26,7 +26,8 @@ class SingleManager {
  public:
   SingleManager(
       std::ostream& output,
-      std::ostream& analyser_out
+      std::ostream& analyser_out,
+      double Pe
       ); 
   void Run();
   void Init();
@@ -38,10 +39,11 @@ class SingleManager {
   std::ostream& analyser_out_;
   void Step();
   int current_step_ = 0;
-  int max_step_ = 300000;
+  int max_step_ = 500000;
   int save_steps_ = 0;
   int change_step_ = 0;
-  int after_change_step_ = 4000;
+  int after_change_step_ = 5000;
+  double Pe = 0.3;
 };
 
 #endif

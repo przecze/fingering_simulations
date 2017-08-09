@@ -3,6 +3,7 @@
 #include<physical_state.h>
 #include<fstream>
 #include<iostream>
+#include<sstream>
 #include<vector>
 class Simulation {
  public:

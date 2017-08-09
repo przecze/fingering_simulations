@@ -33,9 +33,12 @@ void OxygenOnlySimulation::Ignite() {
 
 SingleManager::SingleManager(
       std::ostream& output,
-      std::ostream& analyser_out) :
+      std::ostream& analyser_out,
+      double Pe
+      ) :
   data_out_(output),
   analyser_out_(analyser_out),
+  Pe(Pe),
   communication_stream_()
   {
 }
@@ -47,8 +50,8 @@ void SingleManager::Init() {
         save_steps_,
         max_step_,
         data_out_,
-        10,
-        0.2));
+        5,
+        Pe));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,
         analyser_out_,
@@ -68,7 +71,6 @@ void SingleManager::Run() {
 }
 
 void SingleManager::Step() {
-  std::cout<<"current step:"<<current_step_<<std::endl;
   simulation_->Steps(save_steps_);
   current_step_ = simulation_->current_step_;
   if (current_step_ > change_step_ + 3*after_change_step_) {
@@ -77,7 +79,7 @@ void SingleManager::Step() {
     std::cout<<"new data. Performing analysis..."<<std::endl;
     analyser_->Step();
     if (analyser_->simulation_ended_) {
-      std::cout<<"SM: end signal from analyser, ending sim"<<std::endl;
+      std::cout<<"SM(Pe: "<<Pe<<") end signal from analyser, ending sim"<<std::endl;
     }
   } else if (current_step_ == change_step_) {
     simulation_->Ignite();
