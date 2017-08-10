@@ -510,7 +510,11 @@ void Analyser::RawPrint() {
 }
 
 double Analyser::AvgFrontVelocity() {
-  return front_position_/double(current_step_);
+  if (current_step_!=0) {
+    return front_position_/double(current_step_);
+  } else {
+    return -1;
+  }
 }
 
 double Analyser::AvgTipsDist() {

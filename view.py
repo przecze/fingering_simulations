@@ -5,6 +5,12 @@ if "SSH_CONNECTION" in os.environ:
     import matplotlib
     matplotlib.use('GTKCairo')
 import matplotlib.pyplot as plt
+
+if len(sys.argv)<4:
+    file_name = "fig.png"
+else:
+    file_name = sys.argv[3]
+    print "saving to "+file_name
 if len(sys.argv)<3:
     start_viewing_step = 0
 else:
@@ -62,7 +68,7 @@ while(file_in):
             ax.plot(np.arange(size_x), (1-np.exp(-Pe*Le*phi*dx*np.arange(size_x))))
             plt.suptitle("Step "+str(step_no))
             plt.pause(0.01)
-            plt.savefig("fig.png")
+            plt.savefig(file_name)
     except ValueError as err:
         print 'done', err.message
         for field in range(3):

@@ -24,8 +24,8 @@ void SingleManagerTest() {
 }
 
 void Sim() {
-  auto manager = Manager({0.1,0.3,0.6,1.,2.,5.,10.,15.});
-  manager.out_dir_ = "out/";
+  auto manager = Manager({0.01, 0.05,0.1,0.2,0.5,0.7,1.,1.5,2.,3.,5.,10.,15.});
+  manager.out_dir_ = "runs/run014/";
   manager.threads_per_simulation_ = 10;
   manager.Run();
 }
