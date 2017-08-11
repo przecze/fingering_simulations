@@ -48,8 +48,8 @@ class Simulation {
   constexpr static double gamma=5.*0.3 ;
   constexpr static double ha=0.328*0.3  ;
   constexpr static double phi=0.458 ;
-  constexpr static double sigma=0.02;
-  constexpr static double lam=0.0   ;
+  //constexpr static double sigma=0.02;
+  //constexpr static double lam=0.0   ;
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.1*0.3    ;
 };

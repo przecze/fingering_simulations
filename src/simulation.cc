@@ -117,8 +117,8 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
             dt*(
                 1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
                 +  beta*gamma*f
-                -Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-                -ha*(v-sigma)
+                //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
+                -ha*v
                 );
         NW(i,j) = (v>vp?0:w);
 

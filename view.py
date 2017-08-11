@@ -68,6 +68,7 @@ while(file_in):
             ax.plot(np.arange(size_x), (1-np.exp(-Pe*Le*phi*dx*np.arange(size_x))))
             plt.suptitle("Step "+str(step_no))
             plt.pause(0.01)
+            print "saving to", file_name
             plt.savefig(file_name)
     except ValueError as err:
         print 'done', err.message
