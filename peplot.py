@@ -22,8 +22,14 @@ content = [map(float, x.strip().split()) for x in content]
 fig=plt.figure() 
 n = np.transpose(np.array(content))
 for i in range(n.shape[0]-1):
-    ax = plt.subplot(str(n.shape[0]-1)+"1"+str(i+1))
+    ax = plt.subplot(str(n.shape[0])+"1"+str(i+1))
     s =n[i+1,:]
     ax.plot(n[0,:], s)
     ax.scatter(n[0,:], s)
+i = n.shape[0]-1;
+ax = plt.subplot(str(n.shape[0])+"1"+str(i+1))
+s =n[1,:] * (n[3,:])/(n[2,:]+n[3,:])
+ax.plot(n[0,:], s)
+ax.scatter(n[0,:], s)
+
 plt.show()
