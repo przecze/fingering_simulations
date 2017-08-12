@@ -120,7 +120,8 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
                 -ha*v
                 );
-        NW(i,j) = (v>vp?0:w);
+        const double new_w = w - haw*dt*gamma*f;
+        NW(i,j) = (new_w>0?new_w:0);
 
       }
     }
