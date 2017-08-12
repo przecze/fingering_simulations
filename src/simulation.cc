@@ -104,7 +104,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
         const double u = U(i,j);
         const double v = V(i,j);
         const double w = W(i,j);
-        const double f = (v>vp?1:0)*u*theta*exp(theta-theta/v);
+        const double f = (w>0?1:0)*(v>vp?1:0)*u*theta*exp(theta-theta/v);
 
         NU(i,j) = u + 
             dt*(
@@ -120,7 +120,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
                 -ha*v
                 );
-        const double new_w = w - haw*dt*gamma*f;
+        const double new_w = w - haw*dt*(gamma/phi)*f;
         NW(i,j) = (new_w>0?new_w:0);
 
       }

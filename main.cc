@@ -24,7 +24,7 @@ void SingleManagerTest() {
 }
 
 void Sim() {
-  auto manager = Manager({0.001,0.002,.005,.01,.02,.05,.1,.2,.5,1.,2.,5.,10.});
+  auto manager = Manager({.01,.02,.05,.1,.2,.5,1.,2.,5.,10.});
   std::string out_dir = "runs/run016/";
   std::system((std::string("mkdir -p ") + out_dir).c_str());
   manager.out_dir_ = out_dir;
