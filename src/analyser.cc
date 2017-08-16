@@ -523,7 +523,7 @@ double Analyser::AvgTipsDist() {
     avg_tip_count =
         std::accumulate(tips_count_.begin(), tips_count_.end(), 0LL)/double(tips_count_.size());
   } else {
-    avg_tip_count = 0.;
+    avg_tip_count = -1;
   }
 
   return double(size_x_)/avg_tip_count;

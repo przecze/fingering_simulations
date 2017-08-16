@@ -28,7 +28,7 @@ void Sim() {
   std::string out_dir = "runs/run016/";
   std::system((std::string("mkdir -p ") + out_dir).c_str());
   manager.out_dir_ = out_dir;
-  manager.threads_per_simulation_ = 10;
+  manager.threads_per_simulation_ = 8;
   manager.Run();
 }
 
