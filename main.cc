@@ -17,7 +17,7 @@ void SingleManagerTest() {
   std::cout<<"open: "<<out_filename<<std::endl;
   std::ofstream analyser_out(out_filename);
 
-  SingleManager simple(data_out, analyser_out, 0.5);
+  SingleManager simple(data_out, analyser_out, 3);
   simple.Init();
   simple.Run();
   
