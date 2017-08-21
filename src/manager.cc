@@ -138,7 +138,10 @@ void Manager::PrintFetchedData() {
 void Manager::PrintCombinedSMOuts() {
   std::ofstream print_stream(out_dir_+"pe_vs_properties.out", std::ofstream::out);
   for(int i = 0; i<simulations_num_; ++i){
-    print_stream<<Pe_values_[i]<<" "<<analyses_results_[i]->rdbuf();
+    std::string data(std::istreambuf_iterator<char>(*analyses_results_[i]), {});
+    //(*analyses_results_[i])>>data;
+    std::cout<<data<<std::endl;
+    print_stream<<Pe_values_[i]<<" "<<data;
   }
   print_stream.close();
 }

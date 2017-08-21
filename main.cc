@@ -17,14 +17,14 @@ void SingleManagerTest() {
   std::cout<<"open: "<<out_filename<<std::endl;
   std::ofstream analyser_out(out_filename);
 
-  SingleManager simple(data_out, analyser_out, 3);
+  SingleManager simple(data_out, analyser_out, 0.5);
   simple.Init();
   simple.Run();
   
 }
 
 void Sim() {
-  auto manager = Manager({.01,.02,.05,.1,.2,.5,1.,2.,5.,10.});
+  auto manager = Manager({0.01, 0.02, 0.05, 0.1, 0.2,0.5,1,2,5,10,20});
   std::string out_dir = "runs/run016/";
   std::system((std::string("mkdir -p ") + out_dir).c_str());
   manager.out_dir_ = out_dir;
@@ -46,6 +46,6 @@ void An() {
 
 int main(int argc, char** argv){
   std::srand(time(nullptr));
-  Sim();
+  SingleManagerTest();
   return 0;
 }
