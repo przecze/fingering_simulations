@@ -52,6 +52,6 @@ class Simulation {
   //constexpr static double lam=0.0   ;
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.1*0.3    ;
-  constexpr static double haw=0.1;
+  constexpr static double haw=0.5;
 };
 #endif
