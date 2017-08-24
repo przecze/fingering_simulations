@@ -164,7 +164,7 @@ void Simulation::InitValues() {
 
 void Simulation::Ignite() {
   //physical_state_->u_.SetRandomPart(u0, 0.0, 20, 30, 0, size_y_);
-  physical_state_->v_.SetRandomPart(0, 0.5, 3, 10, 0, size_y_);
+  physical_state_->v_.SetRandomPart(0, 0.5, 3, 2*10, 0, size_y_);
   ignited_ = true;
 }
 
