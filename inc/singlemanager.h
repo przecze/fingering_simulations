@@ -12,7 +12,7 @@ class SingleFingerSimulation : public Simulation {
   void InitValues();
   void Ignite();
   void ApplyBoundaryConditions();
-  int ignition_x  = 120;
+  int ignition_x  = 5;
   int ignition_w = 4;
 };
 
@@ -39,9 +39,9 @@ class SingleManager {
   std::ostream& analyser_out_;
   void Step();
   int current_step_ = 0;
-  int max_step_ = 450000;
-  int save_steps_ = 0;
-  int change_step_ = 0;
+  int max_step_ = 400000;
+  int save_steps_ = 5000;
+  int change_step_ = 5000;
   int after_change_step_ = 5000;
   double Pe = 0.3;
 };

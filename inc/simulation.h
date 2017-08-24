@@ -41,7 +41,7 @@ class Simulation {
   void TimeStamp();
   const double Pe;
   constexpr static double dt = 0.0025/0.3;
-  double idt = 0.01 * dt;
+  double idt =  1* dt;
   constexpr static double dx = 0.5/0.3;
   constexpr static double theta=1.94;
   constexpr static double beta=20. * 0.1 ;
@@ -52,6 +52,6 @@ class Simulation {
   //constexpr static double lam=0.0   ;
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.1*0.3    ;
-  constexpr static double haw=0.5;
+  constexpr static double haw=0.1;
 };
 #endif
