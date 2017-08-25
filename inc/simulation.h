@@ -40,7 +40,7 @@ class Simulation {
   void SwapOldAndNewState();
   void TimeStamp();
   const double Pe;
-  constexpr static double dt = 0.0025/0.3;
+  constexpr static double dt = 0.0025/0.3/2.;
   double idt =  1* dt;
   constexpr static double dx = 0.5/0.3;
   constexpr static double theta=1.94;
