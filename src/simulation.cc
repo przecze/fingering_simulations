@@ -163,8 +163,22 @@ void Simulation::InitValues() {
 }
 
 void Simulation::Ignite() {
-  //physical_state_->u_.SetRandomPart(u0, 0.0, 20, 30, 0, size_y_);
-  physical_state_->v_.SetRandomPart(0, 0.5, 3, 2*10, 0, size_y_);
+  Field& V = physical_state_->v_;
+  double v0 = 1.;
+  int ignition_region_start = 3;
+  int ignition_region_end = 10;
+  int smoothing_till = 13;
+  for (int i = 0; i<ignition_region_start; ++i) {
+    V.SetValuePart(v0*double(i)/ignition_region_start, i, i+1, 0, size_y_);
+  }
+  std::cout<<"igniting from "<<ignition_region_start<<" to "<<ignition_region_end<<std::endl;
+  for (int i = ignition_region_end; i<smoothing_till; ++i) {
+    V.SetValuePart(0*v0*double(smoothing_till - i)/(smoothing_till-ignition_region_end), i, i+1, 0, size_y_);
+  }
+  V.SetValuePart(0., smoothing_till, size_x_, 0, size_y_);
+  physical_state_->v_.SetRandomPart(v0, 0.05,
+      ignition_region_start, ignition_region_end,
+      0, size_y_);
   ignited_ = true;
 }
 

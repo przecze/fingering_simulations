@@ -46,6 +46,6 @@ void An() {
 
 int main(int argc, char** argv){
   std::srand(time(nullptr));
-  Sim();
+  SingleManagerTest();
   return 0;
 }
