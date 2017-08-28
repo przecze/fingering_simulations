@@ -54,9 +54,9 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new Simulation(
-        500,
-        500,
+  simulation_ = std::unique_ptr<Simulation>( new SingleFingerSimulation(
+        1000,
+        250,
         save_steps_,
         max_step_,
         data_out_,
@@ -65,7 +65,7 @@ void SingleManager::Init() {
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,
         analyser_out_,
-        Analyser::kMetaData
+        Analyser::kTipsData
         ));
 }
 
