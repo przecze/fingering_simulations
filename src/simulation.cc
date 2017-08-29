@@ -108,9 +108,9 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
         NU(i,j) = u + 
             dt*(
-              (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
+              (1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
                 - gamma*f/phi
-                - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
+                + Pe*(1/(dx))*(U(i+1,j) - U(i,j))
                 );
 
         NV(i,j) = v +
