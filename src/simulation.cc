@@ -104,23 +104,23 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
         const double u = U(i,j);
         const double v = V(i,j);
         const double w = W(i,j);
-        const double f = w*(v>vp?1:0)*u*theta*exp(theta-theta/v);
+        const double f =gamma* w*(v>vp?1:0)*u*theta*exp(theta-theta/v);
 
         NU(i,j) = u + 
             dt*(
-              (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
-                - gamma*f/phi
+              (1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
+                - f
                 - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
                 );
 
         NV(i,j) = v +
             dt*(
-                1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
-                +  beta*gamma*f
+                (Le)/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
+                +  beta*f
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-                -ha*v
+                -alpha*v
                 );
-        const double new_w = w - haw*dt*(gamma/phi)*f;
+        const double new_w = w - haw*dt*f;
         NW(i,j) = (new_w>0?new_w:0);
 
       }
@@ -141,7 +141,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
 
 void Simulation::ApplyBoundaryConditions() {
-  double K = Pe*Le*phi*dx;
+  double K = Pe*dx;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K + new_state_->u_(size_x_-2,j))/(1+K);
     new_state_->u_(0, j) = new_state_->u_(1,j);
