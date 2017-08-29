@@ -104,23 +104,23 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
         const double u = U(i,j);
         const double v = V(i,j);
         const double w = W(i,j);
-        const double f = w*(v>vp?1:0)*u*theta*exp(theta-theta/v);
+        const double f = gamma*(v>vp?1:0)*u*theta*exp(theta-theta/v);
 
         NU(i,j) = u + 
             dt*(
               (1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
-                - gamma*f/phi
+                - f
                 + Pe*(1/(dx))*(U(i+1,j) - U(i,j))
                 );
 
         NV(i,j) = v +
             dt*(
-                1./(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
-                +  beta*gamma*f
+                Le*(1./(dx*dx))*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
+                +  f
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-                -ha*v
+                -alpha*(v- sigma)
                 );
-        const double new_w = w - haw*dt*(gamma/phi)*f;
+        const double new_w = w - haw*dt*f;
         NW(i,j) = (new_w>0?new_w:0);
 
       }
@@ -141,15 +141,15 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
 
 
 void Simulation::ApplyBoundaryConditions() {
-  double K = Pe*Le*phi*dx;
+  double K = Pe*dx;
   for(int j = 0; j<size_y_; ++j){
     new_state_->u_(size_x_-1, j) = (K + new_state_->u_(size_x_-2,j))/(1+K);
     new_state_->u_(0, j) = new_state_->u_(1,j);
   }
   if (current_step_<10) {
   }
-  new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
-  new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
+  new_state_->v_.SetValuePart(sigma, 0, 1, 0, size_y_);
+  new_state_->v_.SetValuePart(sigma, size_x_-1, size_x_, 0, size_y_);
 }
 
 void Simulation::InitValues() {
@@ -157,7 +157,7 @@ void Simulation::InitValues() {
   //  physical_state_->u_.SetValuePart(1-std::exp(-Le*phi*dx*i*Pe), i, i+1, 0, size_y_);
   //}
   physical_state_->u_.SetValue(1.);
-  physical_state_->v_.SetValue(0);
+  physical_state_->v_.SetValue(sigma);
   physical_state_->w_.SetValue(1.);
   PrintData(out_stream_);
 }
