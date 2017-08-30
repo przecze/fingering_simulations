@@ -92,7 +92,6 @@ Analyser::Analyser(
     input_stream_(input_stream),
     output_stream_(output_stream),
     output_type_(type),
-    front_position_(10),
     current_step_(0),
     tip_num_(0)
     {
@@ -241,12 +240,12 @@ void Analyser::UpdateFrontPosition() {
     ++next_front_position;
   }
   if (next_front_position > w_->size_x_ - r_for_lapl_calculation_ - 3) {
-    std::cout<<"Front reached the end";
+    std::cout<<"Front reached the end"<<std::endl;
     simulation_ended_ = true;
     OnEnd();
   }
   front_position_ = next_front_position;
-  //std::cout<<"new front pos: " <<front_position_<<std::endl;
+  std::cout<<"new front pos: " <<front_position_<<std::endl;
 }
 
 void Analyser::SkipToStep(int step) {

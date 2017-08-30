@@ -86,10 +86,10 @@ class Analyser {
   void RawPrint();
   void Step();
   bool simulation_ended_ = false;
-  int front_position_;
   void OnEnd();
  private:
   OutputType output_type_;
+  int front_position_ = 8;
   bool max_v_as_center_ = false;
   void SortTips();
   bool VPointBurned(int,int);
@@ -108,7 +108,7 @@ class Analyser {
   std::unique_ptr<Field> u_;
   std::unique_ptr<Field> v_;
   std::unique_ptr<Field> w_;
-  static constexpr double burn_offset_ = 0.9;
+  static constexpr double burn_offset_ = 0.6;
   static constexpr double min_v_ = 0.5;
   static constexpr int r_for_lapl_calculation_ = 15;
   std::vector<Tip> tips_;

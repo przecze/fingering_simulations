@@ -7,8 +7,11 @@
 
 void SingleFingerSimulation::Ignite() {
   physical_state_->v_.SetValuePart(1.,
-              ignition_x-1,          ignition_x,
+              ignition_x/3,          ignition_x,
                size_y_/2-ignition_w, size_y_/2+ignition_w);
+  physical_state_->v_.SetValuePart(0.5,
+               0,          ignition_x/3,
+               0, size_y_);
   ignited_=true;
   std::cout<<"Ignited"<<std::endl;
 }
@@ -30,11 +33,11 @@ void SingleFingerSimulation::InitValues() {
 }
 
 void SingleFingerSimulation::ApplyBoundaryConditions() {
-  if (!ignited_) {
-    new_state_->u_.SetValuePart(0.1, std::max(ignition_x -5, 0), ignition_x,
-          size_y_/2-ignition_w/2, size_y_/2+ignition_w/2);
-    //new_state_->u_.SetValuePart(0.15, 1, 2, 0, size_y_);
-  }
+  //if (!ignited_) {
+  //  new_state_->u_.SetValuePart(0.1, std::max(ignition_x -5, 0), ignition_x,
+  //        size_y_/2-ignition_w/2, size_y_/2+ignition_w/2);
+  //  //new_state_->u_.SetValuePart(0.15, 1, 2, 0, size_y_);
+  //}
   Simulation::ApplyBoundaryConditions();
 }
 
@@ -54,9 +57,9 @@ SingleManager::SingleManager(
 }
 
 void SingleManager::Init() {
-  simulation_ = std::unique_ptr<Simulation>( new Simulation(
-        500,
-        500,
+  simulation_ = std::unique_ptr<Simulation>( new SingleFingerSimulation(
+        300,
+        1000,
         save_steps_,
         max_step_,
         data_out_,
@@ -71,7 +74,6 @@ void SingleManager::Init() {
 
 void SingleManager::Run() {
   simulation_->InitValues();
-  analyser_->front_position_ = 120;
   while(current_step_ < max_step_ && !analyser_->simulation_ended_) {
     Step();
   }
