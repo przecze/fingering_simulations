@@ -24,8 +24,8 @@ void SingleManagerTest() {
 }
 
 void Sim() {
-  auto manager = Manager({0.01, 0.02, 0.05, 0.1, 0.2,0.5,1,2,5,10,20});
-  std::string out_dir = "runs/run021/";
+  auto manager = Manager({0.01, 0.02, 0.05, 0.1, 0.2,0.5,1,2,5});
+  std::string out_dir = "runs/run022/";
   std::system((std::string("mkdir -p ") + out_dir).c_str());
   manager.out_dir_ = out_dir;
   manager.threads_per_simulation_ = 8;
@@ -46,6 +46,6 @@ void An() {
 
 int main(int argc, char** argv){
   std::srand(time(nullptr));
-  SingleManagerTest();
+  Sim();
   return 0;
 }

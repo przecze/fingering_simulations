@@ -47,13 +47,13 @@ class Simulation {
   //constexpr static double lam=0.0   ;
   constexpr static double vp=0.45   ;
   constexpr static double Le=0.01;
-  constexpr static double haw=0.1;
+  constexpr static double haw=0.3;
   constexpr static double dt = 2e-5;
   constexpr static double dx=  0.02;
-  constexpr static double alpha= 7;
+  constexpr static double k= 7;
   constexpr static double gamma=200;
   constexpr static double beta=1.;
-  constexpr static double sigma=0.02;
+  constexpr static double sigma=0.2;
   double idt =  1* dt;
 };
 #endif

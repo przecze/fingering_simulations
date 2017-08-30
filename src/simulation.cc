@@ -104,7 +104,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
         const double u = U(i,j);
         const double v = V(i,j);
         const double w = W(i,j);
-        const double f =gamma* w*(v>vp?1:0)*u*theta*exp(theta-theta/v);
+        const double f =gamma*(w>0?1:0)*(v>vp?1:0)*u*theta*exp(theta-theta/v);
 
         NU(i,j) = u + 
             dt*(
@@ -118,7 +118,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
                 (Le)/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
                 +  beta*f
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-                -alpha*(v-sigma)
+                -k*(v-sigma)
                 );
         const double new_w = w - haw*dt*f;
         NW(i,j) = (new_w>0?new_w:0);
@@ -164,7 +164,7 @@ void Simulation::InitValues() {
 
 void Simulation::Ignite() {
   Field& V = physical_state_->v_;
-  std::cout<<Le<<std::endl<<dt<<std::endl<<dx<<std::endl<<alpha<<std::endl<<gamma<<std::endl<<beta<<std::endl;
+  std::cout<<Le<<std::endl<<dt<<std::endl<<dx<<std::endl<<k<<std::endl<<gamma<<std::endl<<beta<<std::endl;
   double v0 = 1.;
   int ignition_region_start = 3;
   int ignition_region_end = 10;

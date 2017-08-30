@@ -55,17 +55,17 @@ SingleManager::SingleManager(
 
 void SingleManager::Init() {
   simulation_ = std::unique_ptr<Simulation>( new Simulation(
-        200,
-        200,
+        500,
+        500,
         save_steps_,
         max_step_,
         data_out_,
-        15,
+        8,
         Pe));
   analyser_ = std::unique_ptr<Analyser>( new Analyser(
         communication_stream_,
         analyser_out_,
-        Analyser::kTipsData
+        Analyser::kMetaData
         ));
 }
 

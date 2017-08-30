@@ -314,9 +314,10 @@ void Analyser::Step() {
 
 void Analyser::OnEnd() {
   if (output_type_ == kMetaData) {
+    double a = AvgTipsWidth();
     output_stream_ << AvgFrontVelocity()<<' '
                    << AvgTipsDist() << ' '
-                   << AvgTipsWidth() << ' '
+                   << a << ' '
                    ;
     output_stream_<<std::endl;
   }
@@ -526,17 +527,16 @@ double Analyser::AvgTipsDist() {
     avg_tip_count = -1;
   }
 
-  return double(size_x_)/avg_tip_count;
+  return double(size_x_)/avg_tip_count - avg_tip_width_;
 }
 
 double Analyser::AvgTipsWidth() {
-  double avg_tip_width;
   if ( tips_width_.size() != 0) {
-    avg_tip_width =
+    avg_tip_width_ =
         std::accumulate(tips_width_.begin(), tips_width_.end(), 0LL)/double(tips_width_.size());
   } else {
-    avg_tip_width = 0.;
+    avg_tip_width_ = 0.;
   }
 
-  return avg_tip_width;
+  return avg_tip_width_;
 }
