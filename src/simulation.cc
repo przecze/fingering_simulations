@@ -110,7 +110,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
             dt*(
               (1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
                 - f
-                - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
+                + Pe*(1/(dx))*(U(i+1,j) - U(i,j))
                 );
 
         NV(i,j) = v +
@@ -118,7 +118,7 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
                 (Le)/(dx*dx)*(V(i+1, j)+V(i-1, j)+V(i, j+1)+V(i, j-1)-4*V(i, j))
                 +  beta*f
                 //-Pe*phi*lam/dx/2.0*(V(i-1,j)-V(i+1,j))
-                -alpha*v
+                -alpha*(v-sigma)
                 );
         const double new_w = w - haw*dt*f;
         NW(i,j) = (new_w>0?new_w:0);
@@ -131,8 +131,8 @@ void Simulation::PartialStepCalculation(int x_begin, int x_end) {
         const double u = U(i,j);
         NU(i,j) = u + 
             idt*(
-              (1./phi)*(1./Le)*(1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
-                - Pe*(1/(dx*2.0))*(U(i-1,j) - U(i+1,j))
+              (1./(dx*dx))*(U(i+1, j)+U(i-1, j)+U(i, j+1)+U(i, j-1)-4*U(i, j))
+                + Pe*(1/(dx))*(U(i+1,j) - U(i,j))
                 );
       }
     }
@@ -148,8 +148,8 @@ void Simulation::ApplyBoundaryConditions() {
   }
   if (current_step_<10) {
   }
-  new_state_->v_.SetValuePart(0., 0, 1, 0, size_y_);
-  new_state_->v_.SetValuePart(0., size_x_-1, size_x_, 0, size_y_);
+  new_state_->v_.SetValuePart(sigma, 0, 1, 0, size_y_);
+  new_state_->v_.SetValuePart(sigma, size_x_-1, size_x_, 0, size_y_);
 }
 
 void Simulation::InitValues() {
@@ -157,13 +157,14 @@ void Simulation::InitValues() {
   //  physical_state_->u_.SetValuePart(1-std::exp(-Le*phi*dx*i*Pe), i, i+1, 0, size_y_);
   //}
   physical_state_->u_.SetValue(1.);
-  physical_state_->v_.SetValue(0);
+  physical_state_->v_.SetValue(sigma);
   physical_state_->w_.SetValue(1.);
   PrintData(out_stream_);
 }
 
 void Simulation::Ignite() {
   Field& V = physical_state_->v_;
+  std::cout<<Le<<std::endl<<dt<<std::endl<<dx<<std::endl<<alpha<<std::endl<<gamma<<std::endl<<beta<<std::endl;
   double v0 = 1.;
   int ignition_region_start = 3;
   int ignition_region_end = 10;
