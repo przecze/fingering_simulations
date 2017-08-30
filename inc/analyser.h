@@ -117,7 +117,7 @@ class Analyser {
   std::vector<int> tips_width_;
   int current_step_;
   int tip_num_;
-  double avg_tip_width_;
+  double avg_tip_width_ = 0.;
 
 };
 

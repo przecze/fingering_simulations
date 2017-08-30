@@ -243,7 +243,6 @@ void Analyser::UpdateFrontPosition() {
   if (next_front_position > w_->size_x_ - r_for_lapl_calculation_ - 3) {
     std::cout<<"Front reached the end";
     simulation_ended_ = true;
-    OnEnd();
   }
   front_position_ = next_front_position;
   //std::cout<<"new front pos: " <<front_position_<<std::endl;
@@ -308,7 +307,6 @@ void Analyser::Step() {
   } else {
     std::cout<<"Analyser: cant perform analysis step. Not enough data in stream"<<std::endl;
     simulation_ended_ = true;
-    OnEnd();
   }
 }
 

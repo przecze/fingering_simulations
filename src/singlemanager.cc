@@ -76,6 +76,7 @@ void SingleManager::Run() {
     Step();
   }
   if ( !analyser_->simulation_ended_) {
+      std::cout<<"SM(Pe: "<<Pe<<") max steps reached. Ending sim"<<std::endl;
     analyser_->OnEnd();
   }
 }
@@ -90,6 +91,7 @@ void SingleManager::Step() {
     analyser_->Step();
     if (analyser_->simulation_ended_) {
       std::cout<<"SM(Pe: "<<Pe<<") end signal from analyser, ending sim"<<std::endl;
+      analyser_->OnEnd();
     }
   } else if (current_step_ == change_step_) {
     simulation_->Ignite();
