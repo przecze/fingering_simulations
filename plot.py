@@ -3,7 +3,7 @@ import sys
 import os
 if "SSH_CONNECTION" in os.environ:
     import matplotlib
-    matplotlib.use('GTK')
+    matplotlib.use('GTKCairo')
 import matplotlib.pyplot as plt
 
 
@@ -36,7 +36,7 @@ I_lapl = 4
 I_cvel_x = -3
 I_cvel_y = -2
 I_cvel = -1
-vel_cum_n = 1
+vel_cum_n = 20
 while(file_in):
     plt.clf()
     try:
@@ -82,10 +82,13 @@ while(file_in):
         print 'done', err.message
         tip_indexes = range(len(data))
         #tip_indexes = [0,1,2,3]
-        data_indexes = [I_lapl, I_cvel_x, I_cvel_y]
+        data_indexes = [I_lapl, I_pos_y]
+        labels = ["$I$ (a.u.)", "$y$ position [dx]"]
         #data = [tip[0::10] for tip in data]
         for data_index in data_indexes:
-            ax = plt.subplot(str(len(data_indexes))+"1"+str(data_indexes.index(data_index)+1))
+            case_num = data_indexes.index(data_index)
+            ax = plt.subplot(str(len(data_indexes))+"1"+str(case_num+1))
+            plt.ylabel(labels[case_num], rotation='vertical')
             for tip_index in tip_indexes:
                 tip = data[tip_index]
                 steps = [entry[0] for entry in tip] 
@@ -109,5 +112,7 @@ while(file_in):
                     ax.plot(xs, ys, color='brown', linewidth=3)
         #plt.legend(loc='upper center', bbox_to_anchor=(0.1, 1.05),
         #                  ncol=3, fancybox=True, shadow=True)
+        plt.xlabel(r"$t$, [$dx$]")    
+        plt.savefig("tips_analysis.pdf", bbox_inches='tight')
         plt.show()
         break

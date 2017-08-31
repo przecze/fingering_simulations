@@ -22,14 +22,14 @@ with open(file_path, 'r') as f:
 content = [map(float, x.strip().split()) for x in content]
 fig=plt.figure() 
 n = np.transpose(np.array(content))
-mask = n[0,:]<=3.25
+mask = n[0,:]<=3
 nnew = n[:,mask]
 pes = nnew[0,:]
 u = nnew[1,:]
 d = nnew[2,:]
 w = nnew[3,:]
-n = np.array([pes,u*w/(w+d), w])
-labels = ["dupa", r"$u\frac{w}{\mathregular{d+w}}$", "w"]
+n = np.array([pes, u, d-w, w])
+labels = ["dupa", r"$u^{\mathregular{2}}$", r"$d$", r"$w$"]
 
 for i in range(n.shape[0]-1):
     print i
@@ -39,12 +39,12 @@ for i in range(n.shape[0]-1):
     print labels[i+1]
     slope, intercept, dummy,dummy,dummy = stats.linregress(n[0,:], s)
     ax.scatter(n[0,:], s)
+    ax.set_xlim([0, np.max(n[0,:])*1.1])
     lab = "%.2g" %intercept+r'+'+"%.2g"%slope+r'*Pe'
     print lab
     ax.plot(n[0,:], intercept + slope*n[0,:], label=r'linear fit, '+lab)
-    ax.set_ylim([0, np.max(s)*1.1])
-    ax.set_xlim([0, np.max(n[0,:])*1.1])
     ax.legend(loc="best")
+    ax.set_ylim([0, np.max(s)*1.1])
 file_name = "rplt"
 plt.xlabel(r'$Pe$')
 print "saving to "+file_name

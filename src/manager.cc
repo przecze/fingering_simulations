@@ -140,8 +140,13 @@ void Manager::PrintCombinedSMOuts() {
   for(int i = 0; i<simulations_num_; ++i){
     std::string data(std::istreambuf_iterator<char>(*analyses_results_[i]), {});
     //(*analyses_results_[i])>>data;
-    std::cout<<data<<std::endl;
-    print_stream<<Pe_values_[i]<<" "<<data;
+    std::cout<<"Pe:"<<Pe_values_[i]<<" props: "<<data<<std::endl;
+    if(data.empty()) {
+       std::cout<<"empty string!"<<std::endl;
+    }
+    else {
+      print_stream<<Pe_values_[i]<<" "<<data;
+    }
   }
   print_stream.close();
 }
