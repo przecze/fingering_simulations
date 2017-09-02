@@ -51,7 +51,7 @@ while(file_in):
                 for i in range(size_x):
                     data[field,i,:] = file_in.readline().split()
                 ax = plt.subplot("13"+str(field+1))
-                cax = ax.imshow(data[field], interpolation='nearest')
+                cax = ax.imshow(data[field], interpolation='nearest', extent=(0,10,0,10))
                 cax.set_clim(vmin=0, vmax=1)
                 cbar = fig.colorbar(cax, ticks=[0,0.5,1], orientation='vertical', fraction=0.046, pad=0.04)
                 #cbar = fig.colorbar(cax, ticks=[0,0.5,1], orientation='vertical')
@@ -78,7 +78,7 @@ while(file_in):
         print 'done', err.message
         for field in range(3):
             ax = plt.subplot("13"+str(field+1))
-            cax = ax.imshow(data[field], interpolation='nearest')
+            cax = ax.imshow(data[field], interpolation='nearest', extent=(0,10,0,10))
             if field==0:
                     cax.set_clim(vmin=0, vmax=0.1)
                     cbar = fig.colorbar(cax, orientation='vertical')

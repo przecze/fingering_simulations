@@ -36,7 +36,7 @@ I_lapl = 4
 I_cvel_x = -3
 I_cvel_y = -2
 I_cvel = -1
-vel_cum_n = 20
+vel_cum_n = 50
 while(file_in):
     plt.clf()
     try:
@@ -82,8 +82,8 @@ while(file_in):
         print 'done', err.message
         tip_indexes = range(len(data))
         #tip_indexes = [0,1,2,3]
-        data_indexes = [I_lapl, I_pos_y]
-        labels = ["$I$ (a.u.)", "$y$ position [dx]"]
+        data_indexes = [I_lapl, I_pos_y, I_cvel_x, I_cvel_y, I_cvel]
+        labels = ["$I$ (a.u.)", "$y$ position [dx]", "$v_x$", "$v_y$", "$v$"]
         #data = [tip[0::10] for tip in data]
         for data_index in data_indexes:
             case_num = data_indexes.index(data_index)
